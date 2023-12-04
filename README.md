@@ -1,3 +1,5 @@
+# [Диздок](https://docs.google.com/document/d/1MDdOFXokbuxhKzLuBlZSNHf_TKU0P7aM6q5qWGO4mzM/edit#heading=h.beiucy4zb8wy)
+
 # Пару простых правил
 ## Прогаммисты
 - Форма осмысленных коммитов должна следовать [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary). Для вскода есть [расширение](https://marketplace.visualstudio.com/items?itemName=vivaxy.vscode-conventional-commits) что бы не думать а просто заполнить формочку
