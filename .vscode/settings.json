@@ -51,5 +51,12 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Game.sln"
+    "dotnet.defaultSolution": "Game.sln",
+    "dotnetAcquisitionExtension.existingDotnetPath": [
+        {
+            "extensionId": "visualstudiotoolsforunity.vstuc",
+            // Put your dotnet executable path here https://github.com/microsoft/vscode-dotnettools/issues/562
+            "path": "/usr/bin"
+        }
+    ]
 }
