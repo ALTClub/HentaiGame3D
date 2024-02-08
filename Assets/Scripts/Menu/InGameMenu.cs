@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class InGameMenu : MonoBehaviour
 {
-    [SerializeField] private Player player = null;
+    [SerializeField] private Input playerInputComponent;
     public void Close()
     {
-        player?.EnableControls();
+        playerInputComponent.EnableControls();
     }
 
     public void Open()
     {
-        player?.DisableControls();
+        playerInputComponent.DisableControls();
     }
 }
