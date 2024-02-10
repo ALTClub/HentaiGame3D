@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class InGameMenu : MonoBehaviour
 {
-    [SerializeField] private Input playerInputComponent;
+    [SerializeField] private InputManager playerInputComponent;
     public void Close()
     {
         playerInputComponent.EnableControls();
