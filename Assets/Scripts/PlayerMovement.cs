@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] float Speed, JumpForce;
     [SerializeField][Range(1,10)] private float CancelJumpForce;
+    [SerializeField] float rotationSpeed;
     private Rigidbody rb;
     private Animator anim;
     void Start()
@@ -27,7 +28,8 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 direction = InputManager.Input.Player.Movement.ReadValue<Vector2>();
         direction = new Vector3(direction.x, 0, direction.y);
-        rb.AddForce(direction * Speed * Time.fixedDeltaTime, ForceMode.Impulse);
+        rb.AddRelativeForce(direction * Speed * Time.fixedDeltaTime, ForceMode.Impulse);
+        //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed * Time.fixedDeltaTime);
     }
     private void OnCollisionEnter(Collision collision)
     {
