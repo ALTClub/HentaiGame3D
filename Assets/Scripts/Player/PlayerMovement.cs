@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float Speed, JumpForce;
 
-    [Range(1,10)]
+    [Range(1, 10)]
     [SerializeField]
     private float CancelJumpForce;
 
