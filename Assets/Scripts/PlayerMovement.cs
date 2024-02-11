@@ -32,9 +32,9 @@ public class PlayerMovement : MonoBehaviour
         direction = new Vector3(direction.x, 0, direction.y);
         rb.AddRelativeForce(direction * Speed * Time.fixedDeltaTime, ForceMode.Impulse);
         if (!InputManager.Input.Player.Movement.IsPressed()) return;
-        cam.Rotate(rotationSpeed, transform); //поворачиваем игрока в центр камеры
+        cam.Rotate(rotationSpeed, transform); //РїРѕРІРѕСЂР°С‡РёРІР°РµРј РёРіСЂРѕРєР° РІ С†РµРЅС‚СЂ РєР°РјРµСЂС‹
         model.localRotation = Quaternion.Slerp(model.localRotation,Quaternion.LookRotation(direction), rotationSpeed * Time.fixedDeltaTime); 
-        //поворачиваем модельку в сторону движения
+        //РїРѕРІРѕСЂР°С‡РёРІР°РµРј РјРѕРґРµР»СЊРєСѓ РІ СЃС‚РѕСЂРѕРЅСѓ РґРІРёР¶РµРЅРёСЏ
     }
     private void OnCollisionEnter(Collision collision)
     {
