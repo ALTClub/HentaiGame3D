@@ -9,8 +9,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float Speed, JumpForce;
     [SerializeField][Range(1,10)] private float CancelJumpForce;
     [SerializeField] float rotationSpeed;
+    [SerializeField] Transform model;
     private Rigidbody rb;
     private Animator anim;
+    [SerializeField] CameraScript cam;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -29,7 +31,10 @@ public class PlayerMovement : MonoBehaviour
         Vector3 direction = InputManager.Input.Player.Movement.ReadValue<Vector2>();
         direction = new Vector3(direction.x, 0, direction.y);
         rb.AddRelativeForce(direction * Speed * Time.fixedDeltaTime, ForceMode.Impulse);
-        //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed * Time.fixedDeltaTime);
+        if (!InputManager.Input.Player.Movement.IsPressed()) return;
+        cam.Rotate(rotationSpeed, transform); //поворачиваем игрока в центр камеры
+        model.localRotation = Quaternion.Slerp(model.localRotation,Quaternion.LookRotation(direction), rotationSpeed * Time.fixedDeltaTime); 
+        //поворачиваем модельку в сторону движения
     }
     private void OnCollisionEnter(Collision collision)
     {
