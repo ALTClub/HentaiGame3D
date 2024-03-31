@@ -12,8 +12,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float Speed, JumpForce;
     [SerializeField] float rotationSpeed;
 
-    [Range(1,10)]
+    [Range(1, 10)]
     [SerializeField] 
+    private float Speed, JumpForce;
+
+    [Range(1, 10)]
+    [SerializeField]
     private float CancelJumpForce;
 
     private Rigidbody rb;
@@ -49,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
         //поворачиваем модельку в сторону движения
         model.localRotation = Quaternion.Slerp(model.localRotation,Quaternion.LookRotation(direction), rotationSpeed * Time.fixedDeltaTime); 
     }
-    
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.CompareTag("Ground")) {
