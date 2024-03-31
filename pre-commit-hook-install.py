@@ -2,8 +2,11 @@
 
 import os, stat
 
-PRE='.git/hooks/pre-commit'
-os.mkdir('.git/hooks')
+HOOKS='.git/hooks'
+PRE=f'{HOOKS}/pre-commit'
+
+if not os.path.exists(HOOKS):
+    os.mkdir(HOOKS)
 
 with open(PRE, 'w') as f:
     f.write('#!/bin/env python\n')
