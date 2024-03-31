@@ -9,11 +9,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Transform model;
     [SerializeField] CameraScript cam;
 
-    [SerializeField] float Speed, JumpForce;
     [SerializeField] float rotationSpeed;
 
     [Range(1, 10)]
-    [SerializeField] 
+    [SerializeField]
     private float Speed, JumpForce;
 
     [Range(1, 10)]
@@ -51,26 +50,29 @@ public class PlayerMovement : MonoBehaviour
         cam.Rotate(rotationSpeed, transform); //поворачиваем игрока в центр камеры
 
         //поворачиваем модельку в сторону движения
-        model.localRotation = Quaternion.Slerp(model.localRotation,Quaternion.LookRotation(direction), rotationSpeed * Time.fixedDeltaTime); 
+        model.localRotation = Quaternion.Slerp(model.localRotation, Quaternion.LookRotation(direction), rotationSpeed * Time.fixedDeltaTime);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("Ground")) {
+        if (collision.collider.CompareTag("Ground"))
+        {
             anim.SetBool("IsGrounded", true);
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        if (collision.collider.CompareTag("Ground")) {
+        if (collision.collider.CompareTag("Ground"))
+        {
             anim.SetBool("IsGrounded", false);
         }
     }
 
     void jump()
     {
-        if (anim.GetBool("IsGrounded")) {
+        if (anim.GetBool("IsGrounded"))
+        {
             rb.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
         }
     }

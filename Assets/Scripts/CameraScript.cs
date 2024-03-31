@@ -6,7 +6,7 @@ public class CameraScript : MonoBehaviour
 {
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;   
+        Cursor.lockState = CursorLockMode.Locked;
     }
     public void Rotate(float rotationSpeed, Transform player)
     {
