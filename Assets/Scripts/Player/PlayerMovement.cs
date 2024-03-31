@@ -11,7 +11,6 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] float rotationSpeed;
 
-    [Range(1, 10)]
     [SerializeField]
     private float Speed, JumpForce;
 
