@@ -5,11 +5,9 @@ using UnityEngine.UI;
 
 public class PromptUI : MonoBehaviour
 {
-    [SerializeField] Text control;
-    [SerializeField] Text prompt;
+    [SerializeField] Text control, prompt;
 
-    [SerializeField] Sprite selectedImg;
-    [SerializeField] Sprite commonImg;
+    [SerializeField] Sprite selectedImg, commonImg;
 
     [SerializeField] Image img;
 
