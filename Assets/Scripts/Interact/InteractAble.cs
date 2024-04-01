@@ -4,10 +4,7 @@ using UnityEngine;
 
 public abstract class InteractAble : MonoBehaviour
 {
-    [SerializeField] private string _name;
-    public void Interact()
-    {
-
-    }
+    [SerializeField] protected string _name;
+    public abstract void Interact();
     public string GetName { get { return _name; } }
 }

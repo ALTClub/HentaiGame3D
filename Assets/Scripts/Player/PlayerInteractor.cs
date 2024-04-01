@@ -48,6 +48,6 @@ public class PlayerInteractor : MonoBehaviour
     }
     void interact()
     {
-        interactAbles[currentInteract].Interact();
+        if (interactAbles.Count > currentInteract) interactAbles[currentInteract]?.Interact();
     }
 }
