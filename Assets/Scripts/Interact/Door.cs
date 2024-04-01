@@ -19,8 +19,10 @@ public class Door : InteractAble
     }
     void toggle()
     {
+        if (rotator != null) StopCoroutine(rotator);
         rotator = StartCoroutine(toggleDoor());
         isOpen = !isOpen;
+        _name = (isOpen) ? "Закрыть" : "Открыть";
     }
     IEnumerator toggleDoor()
     {

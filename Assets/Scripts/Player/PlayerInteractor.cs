@@ -21,10 +21,8 @@ public class PlayerInteractor : MonoBehaviour
     void sellect(int axis)
     {
         axis /= Math.Abs(axis);
-        Debug.Log(interactAbles.Count);
-        if (currentInteract >= interactAbles.Count - 1) return;
+        if (currentInteract + axis >= interactAbles.Count || currentInteract + axis < 0) return;
         currentInteract += axis;
-        Debug.Log(currentInteract);
         OnSellectInteraction?.Invoke(currentInteract);
     }
     private void OnTriggerEnter(Collider other)
@@ -48,6 +46,10 @@ public class PlayerInteractor : MonoBehaviour
     }
     void interact()
     {
-        if (interactAbles.Count > currentInteract) interactAbles[currentInteract]?.Interact();
+        if (interactAbles.Count > currentInteract)
+        {
+            interactAbles[currentInteract]?.Interact();
+            OnInteractUpdate.Invoke(interactAbles);
+        }
     }
 }
