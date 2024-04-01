@@ -1,22 +1,27 @@
 using System.Collections;
 using UnityEngine;
 
-public class Door : InteractAble
+public class Door : Interactable
 {
     [SerializeField] bool isOpen = false;
     [SerializeField] float rotateAngle;
+
     [SerializeField] float rotateSpeed;
-    Coroutine rotator;
     [SerializeField] GameObject door;
+
+    Coroutine rotator;
     Quaternion rotation;
+
     private void Start()
     {
         rotation = door.transform.rotation;
     }
+
     public override void Interact()
     {
         toggle();
     }
+
     void toggle()
     {
         if (rotator != null) StopCoroutine(rotator);
@@ -24,6 +29,7 @@ public class Door : InteractAble
         isOpen = !isOpen;
         _name = (isOpen) ? "Закрыть" : "Открыть";
     }
+
     IEnumerator toggleDoor()
     {
         float t = 0;
@@ -34,12 +40,8 @@ public class Door : InteractAble
             door.transform.rotation = Quaternion.Lerp(door.transform.rotation, targetRotation, t / rotateSpeed);
             yield return new WaitForFixedUpdate();
         }
-    }/*
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.CompareTag("Player"))
-            if (rotator != null) StopCoroutine(rotator);
-    }*/
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
