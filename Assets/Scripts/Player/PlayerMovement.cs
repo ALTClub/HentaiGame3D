@@ -52,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
         model.localRotation = Quaternion.Slerp(model.localRotation, Quaternion.LookRotation(direction), rotationSpeed * Time.fixedDeltaTime);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(UnityEngine.Collision collision)
     {
         if (collision.collider.CompareTag("Ground"))
         {
@@ -60,7 +60,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnCollisionExit(Collision collision)
+    private void OnCollisionExit(UnityEngine.Collision collision)
     {
         if (collision.collider.CompareTag("Ground"))
         {

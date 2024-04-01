@@ -321,7 +321,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 130018479}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.07152135, y: -0.000000017162312, z: 0.0000000012306233, w: 0.9974391}
+  m_LocalRotation: {x: 0.07152135, y: 0.000000017162323, z: -0.000000001230624, w: 0.9974391}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1231,7 +1231,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 883162280}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09105387, y: -0.00000003145287, z: 0.0000000028758522, w: 0.995846}
+  m_LocalRotation: {x: 0.09105387, y: -0.00000003411664, z: 0.0000000031194103, w: 0.995846}
   m_LocalPosition: {x: 0, y: -2.6931298, z: -4.090706}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1282,6 +1282,49 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dff50fe63d328334989a8c4b65bdaab6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &1039015223 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7265207876605260968, guid: 5a7c474b294110a4ca561c53ab733669, type: 3}
+  m_PrefabInstance: {fileID: 2049011081}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1039015228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1039015223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd8489d5d4fda0d448704a031d59a968, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  method:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1267987985}
+        m_TargetAssemblyTypeName: Door, Assembly-CSharp
+        m_MethodName: StopRotation
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1267987985 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 581311557815454350, guid: 5a7c474b294110a4ca561c53ab733669, type: 3}
+  m_PrefabInstance: {fileID: 2049011081}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56df15f1154e7714faae1f169ea3a60d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1320609024
@@ -1544,7 +1587,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1614023810}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.10770608, y: 9.403517e-10, z: -1.0187428e-10, w: 0.9941828}
+  m_LocalRotation: {x: 0.10770606, y: -0.000000028703528, z: 0.0000000031096334, w: 0.9941828}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1963,7 +2006,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7265207876605260968, guid: 5a7c474b294110a4ca561c53ab733669, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1039015228}
   m_SourcePrefab: {fileID: 100100000, guid: 5a7c474b294110a4ca561c53ab733669, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

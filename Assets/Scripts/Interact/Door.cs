@@ -7,7 +7,7 @@ public class Door : Interactable
     [SerializeField] float rotateAngle;
 
     [SerializeField] float rotateSpeed;
-    [SerializeField] GameObject door, frame;
+    [SerializeField] GameObject door;
 
     Coroutine rotator;
     Quaternion rotation;
@@ -41,11 +41,12 @@ public class Door : Interactable
             yield return new WaitForFixedUpdate();
         }
     }
+    public void StopRotation() { if (rotator != null) StopCoroutine(rotator); }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Vector3 startDirection = frame.transform.right * door.transform.localScale.x;
+        Vector3 startDirection = transform.right * door.transform.localScale.x;
         Gizmos.DrawRay(door.transform.position, Quaternion.Euler(0, rotateAngle, 0) * startDirection);
     }
 }
