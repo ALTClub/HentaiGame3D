@@ -35,7 +35,7 @@ public class InteractUI : MonoBehaviour
             promptList.Add(prompt);
 
             prompt.transform.SetParent(promptsPoint);
-            prompt.GetComponent<PromptUI>().SetText(interactable.GetName);
+            prompt.GetComponent<PromptUI>().SetText(interactable.GetPrompt);
         }
 
         center();

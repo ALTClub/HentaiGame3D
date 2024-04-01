@@ -7,14 +7,14 @@ public class Door : Interactable
     [SerializeField] float rotateAngle;
 
     [SerializeField] float rotateSpeed;
-    [SerializeField] GameObject door;
+    [SerializeField] GameObject door, frame;
 
     Coroutine rotator;
     Quaternion rotation;
 
     private void Start()
     {
-        rotation = door.transform.rotation;
+        rotation = door.transform.localRotation;
     }
 
     public override void Interact()
@@ -27,17 +27,17 @@ public class Door : Interactable
         if (rotator != null) StopCoroutine(rotator);
         rotator = StartCoroutine(toggleDoor());
         isOpen = !isOpen;
-        _name = (isOpen) ? "Закрыть" : "Открыть";
+        prompt = (isOpen) ? "Закрыть" : "Открыть";
     }
 
     IEnumerator toggleDoor()
     {
         float t = 0;
-        Quaternion targetRotation = (!isOpen) ? Quaternion.Euler(0, rotation.y + rotateAngle, 0) : rotation;
-        while (door.transform.rotation != targetRotation)
+        Quaternion targetRotation = (!isOpen) ? Quaternion.Euler(0, 0, rotateAngle) : rotation;
+        while (door.transform.localRotation != targetRotation)
         {
             t += Time.fixedDeltaTime;
-            door.transform.rotation = Quaternion.Lerp(door.transform.rotation, targetRotation, t / rotateSpeed);
+            door.transform.localRotation = Quaternion.Lerp(door.transform.localRotation, targetRotation, t / rotateSpeed);
             yield return new WaitForFixedUpdate();
         }
     }
@@ -45,7 +45,7 @@ public class Door : Interactable
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Vector3 startDirection = door.transform.right * door.transform.localScale.x;
-        Gizmos.DrawRay(door.transform.position, Quaternion.Euler(0, rotation.y + rotateAngle, 0) * startDirection);
+        Vector3 startDirection = frame.transform.right * door.transform.localScale.x;
+        Gizmos.DrawRay(door.transform.position, Quaternion.Euler(0, rotateAngle, 0) * startDirection);
     }
 }

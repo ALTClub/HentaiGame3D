@@ -4,7 +4,11 @@ using UnityEngine;
 
 public abstract class Interactable : MonoBehaviour
 {
-    [SerializeField] protected string _name;
+    [SerializeField] protected string prompt;
+    private void Awake()
+    {
+        gameObject.tag = "Interactable";
+    }
     public abstract void Interact();
-    public string GetName { get { return _name; } }
+    public string GetPrompt { get { return prompt; } }
 }
