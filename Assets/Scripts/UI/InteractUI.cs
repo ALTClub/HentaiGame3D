@@ -25,13 +25,19 @@ public class InteractUI : MonoBehaviour
             GameObject prompt = Instantiate(this.prompt, promptsPoint.position, Quaternion.identity);
             prompt.transform.SetParent(promptsPoint);
             promptList.Add(prompt);
-            //prompt.GetComponentInChildren<TMP_Text>().text = interactAble.GetName;
+            prompt.GetComponent<PromptUI>().SetText(interactAble.GetName);
         }
         center();
+        sellectInteraction(0);
     }
     void sellectInteraction(int id)
     {
-
+        int i = 0;
+        foreach (GameObject prompt in promptList)
+        {
+            prompt.GetComponent<PromptUI>().Select(i == id);
+            i++;
+        }
     }
     void center()
     {
