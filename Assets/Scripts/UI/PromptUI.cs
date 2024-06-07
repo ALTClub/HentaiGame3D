@@ -11,8 +11,6 @@ public class PromptUI : MonoBehaviour
 
     [SerializeField] Image img;
 
-    bool isSelected = false;
-
     public void SetText(string prompt)
     {
         this.prompt.text = prompt;
@@ -21,7 +19,6 @@ public class PromptUI : MonoBehaviour
 
     public void Select(bool isSelected)
     {
-        this.isSelected = isSelected;
         img.sprite = (isSelected) ? selectedImg : commonImg;
     }
 }

@@ -1963,6 +1963,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Door (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 5794523703617397194, guid: 5a7c474b294110a4ca561c53ab733669, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 6566697093908560752, guid: 5a7c474b294110a4ca561c53ab733669, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.019515038

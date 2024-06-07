@@ -32,9 +32,8 @@ public class PlayerInteractor : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(interactableTag))
+        if (other.TryGetComponent<Interactable>(out Interactable interact))
         {
-            Interactable interact = other.GetComponent<Interactable>();
             interactables.Add(interact);
             OnInteractUpdate.Invoke(interactables);
         }
@@ -42,9 +41,8 @@ public class PlayerInteractor : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag(interactableTag))
+        if (other.TryGetComponent<Interactable>(out Interactable interact))
         {
-            Interactable interact = other.GetComponent<Interactable>();
             interactables.Remove(interact);
             OnInteractUpdate.Invoke(interactables);
         }
