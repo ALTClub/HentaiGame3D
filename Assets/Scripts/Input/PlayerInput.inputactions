@@ -40,6 +40,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Characteristics",
+                    "type": "Button",
+                    "id": "96e6bdf7-985e-48f2-b1fe-0154d98368fe",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "EscMenu",
+                    "type": "Button",
+                    "id": "4a6c1bd1-8392-4550-8584-b9c0890fd431",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -185,6 +203,28 @@
                     "action": "Sellect",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "c1c433c7-64c1-453c-a738-33efddf5dfe9",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Characteristics",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c3595090-fb1f-4769-bfa8-d454a7f799cc",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "EscMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

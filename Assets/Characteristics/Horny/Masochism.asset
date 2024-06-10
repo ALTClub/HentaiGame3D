@@ -22,7 +22,7 @@ MonoBehaviour:
     valueToReach: 0
     description: "\u041B\u044E\u0431\u0430\u044F \u0443\u0433\u0440\u043E\u0437\u0430
       \u043D\u0430\u0441\u0438\u043B\u0438\u044F \u043C\u0435\u043D\u044F \u043F\u0443\u0433\u0430\u0435\u0442"
-    color: {r: 0.5754717, g: 0, b: 0.11813163, a: 0}
+    color: {r: 0.5754717, g: 0, b: 0.11813163, a: 1}
   - name: "\u041D\u043E\u0440\u043C\u0430\u043B\u044C\u043D\u043E"
     valueToReach: 10
     description: "\u042F \u043D\u043E\u0440\u043C\u0430\u043B\u044C\u043D\u043E \u0440\u0435\u0430\u0433\u0438\u0440\u0443\u044E

@@ -15,13 +15,6 @@ public class InputManager : MonoBehaviour
         this.DisableControls();
     }
 
-    public void DisableControls()
-    {
-        Input.Disable();
-    }
-
-    public void EnableControls()
-    {
-        Input.Enable();
-    }
+    public void DisableControls() => Input.Disable();
+    public void EnableControls() => Input.Enable();
 }
