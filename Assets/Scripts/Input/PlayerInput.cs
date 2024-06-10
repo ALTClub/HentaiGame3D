@@ -62,6 +62,24 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Characteristics"",
+                    ""type"": ""Button"",
+                    ""id"": ""96e6bdf7-985e-48f2-b1fe-0154d98368fe"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""EscMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""4a6c1bd1-8392-4550-8584-b9c0890fd431"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -207,6 +225,28 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""Sellect"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c1c433c7-64c1-453c-a738-33efddf5dfe9"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""Characteristics"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c3595090-fb1f-4769-bfa8-d454a7f799cc"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""EscMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -236,6 +276,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Sellect = m_Player.FindAction("Sellect", throwIfNotFound: true);
+        m_Player_Characteristics = m_Player.FindAction("Characteristics", throwIfNotFound: true);
+        m_Player_EscMenu = m_Player.FindAction("EscMenu", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -301,6 +343,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Sellect;
+    private readonly InputAction m_Player_Characteristics;
+    private readonly InputAction m_Player_EscMenu;
     public struct PlayerActions
     {
         private @PlayerInput m_Wrapper;
@@ -309,6 +353,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Sellect => m_Wrapper.m_Player_Sellect;
+        public InputAction @Characteristics => m_Wrapper.m_Player_Characteristics;
+        public InputAction @EscMenu => m_Wrapper.m_Player_EscMenu;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -330,6 +376,12 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Sellect.started += instance.OnSellect;
             @Sellect.performed += instance.OnSellect;
             @Sellect.canceled += instance.OnSellect;
+            @Characteristics.started += instance.OnCharacteristics;
+            @Characteristics.performed += instance.OnCharacteristics;
+            @Characteristics.canceled += instance.OnCharacteristics;
+            @EscMenu.started += instance.OnEscMenu;
+            @EscMenu.performed += instance.OnEscMenu;
+            @EscMenu.canceled += instance.OnEscMenu;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -346,6 +398,12 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Sellect.started -= instance.OnSellect;
             @Sellect.performed -= instance.OnSellect;
             @Sellect.canceled -= instance.OnSellect;
+            @Characteristics.started -= instance.OnCharacteristics;
+            @Characteristics.performed -= instance.OnCharacteristics;
+            @Characteristics.canceled -= instance.OnCharacteristics;
+            @EscMenu.started -= instance.OnEscMenu;
+            @EscMenu.performed -= instance.OnEscMenu;
+            @EscMenu.canceled -= instance.OnEscMenu;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -378,5 +436,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnSellect(InputAction.CallbackContext context);
+        void OnCharacteristics(InputAction.CallbackContext context);
+        void OnEscMenu(InputAction.CallbackContext context);
     }
 }
