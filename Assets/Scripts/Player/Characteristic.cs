@@ -10,7 +10,7 @@ public class Characteristic : ScriptableObject
 {
     [SerializeField] string Name;
     [SerializeField] string definition;
-    public string GetName { get { return name; } }
+    public string GetName { get { return Name; } }
     public string GetDefinition { get { return definition; } }
     [SerializeField] Sprite icon;
     public Sprite GetIcon { get { return icon; } }
@@ -42,6 +42,12 @@ public class Characteristic : ScriptableObject
         else return;
         checkLevel();
     }
+    public float GetLevelProgress()
+    {
+        float sum = levels[currentLevel + 1].valueToReach - levels[currentLevel].valueToReach;
+        float cur = experience - levels[currentLevel].valueToReach;
+        return sum / 100 * cur;
+    }
 }
 [Serializable]
 public struct level
@@ -52,4 +58,5 @@ public struct level
     /// </summary>
     public int valueToReach;
     [TextArea] public string description;
+    public Color color;
 }

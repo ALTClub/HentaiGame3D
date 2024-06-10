@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25161eb82cbb7a04eb096116078617f1, type: 3}
+  m_Name: Dance
+  m_EditorClassIdentifier: 
+  Name: "\u0422\u0430\u043D\u0446\u044B"
+  definition: "\u0423\u043C\u0435\u043D\u0438\u0435 \u0437\u0430\u0436\u0438\u0433\u0430\u0442\u044C
+    \u0442\u043E\u043B\u043F\u0443 \u0441\u0432\u043E\u0438\u043C\u0438 \u0442\u0430\u043D\u0446\u0430\u043C\u0438"
+  icon: {fileID: 0}
+  levels:
+  - name: "\u041F\u043E\u043B\u043D\u044B\u0439 \u043D\u043E\u043B\u044C"
+    valueToReach: 0
+    description: "\u042F \u043D\u0438\u0447\u0435\u0433\u043E \u043D\u0435 \u0443\u043C\u0435\u044E"
+    color: {r: 0.9150943, g: 0.11654504, b: 0.11654504, a: 1}
+  - name: "\u041D\u043E\u0432\u0438\u0447\u043E\u043A"
+    valueToReach: 15
+    description: 
+    color: {r: 0.8490566, g: 0.35019213, b: 0.10012458, a: 1}
+  - name: "\u041B\u044E\u0431\u0438\u0442\u0435\u043B\u044C"
+    valueToReach: 30
+    description: 
+    color: {r: 0.15726236, g: 0.5849056, b: 0.16709326, a: 1}
+  - name: "\u041F\u0440\u043E\u0434\u0432\u0438\u043D\u0443\u0442\u044B\u0439"
+    valueToReach: 50
+    description: 
+    color: {r: 0.6132076, g: 0.2053667, b: 0.5833656, a: 1}
+  - name: "\u041F\u0440\u043E\u0444\u0435\u0441\u0441\u0438\u043E\u043D\u0430\u043B"
+    valueToReach: 100
+    description: 
+    color: {r: 0.7924528, g: 0.6015866, b: 0.018689923, a: 1}
