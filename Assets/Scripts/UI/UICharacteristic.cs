@@ -29,8 +29,10 @@ public class UICharacteristic : MonoBehaviour, IPointerEnterHandler, IPointerExi
         currentLevel = characteristic.CurrentLevel;
         progress.fillAmount = characteristic.GetLevelProgress();
     }
-    private void OnMouseEnter()
+    private void OnDisable()
     {
+        Destroy(spawnedHint.gameObject);
+        spawnedHint = null;
     }
     private void Update()
     {
@@ -39,10 +41,6 @@ public class UICharacteristic : MonoBehaviour, IPointerEnterHandler, IPointerExi
             spawnedHint.transform.position = Input.mousePosition;
         }
     }
-    private void OnMouseExit()
-    {
-    }
-
     public void OnPointerEnter(PointerEventData eventData)
     {
         spawnedHint = Instantiate(hintPrefab, transform.position, Quaternion.identity);
@@ -56,7 +54,6 @@ public class UICharacteristic : MonoBehaviour, IPointerEnterHandler, IPointerExi
     }
     public void OnPointerExit(PointerEventData eventData)
     {
-        Destroy(spawnedHint.gameObject);
-        spawnedHint = null;
+        OnDisable();
     }
 }
