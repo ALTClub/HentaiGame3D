@@ -4,19 +4,16 @@ using UnityEngine;
 
 public class InGameMenu : MonoBehaviour
 {
-
-    [Header("Окна")]
-    ///
-    [SerializeField] GameObject EscMenu, Header, CharacteristicsMenu;
-    bool somethingOpened = false;
+    [SerializeField] GameObject _escMenu, _header, _characteristicsMenu;
     [Header("Характеристики")]
-    [SerializeField] PlayerCharacteristics PlayerCharacteristics;
+    [SerializeField] PlayerCharacteristics _playerCharacteristics;
+    bool _somethingOpened = false;
     private void Start()
     {
         InputManager.Input.Player.EscMenu.performed += ctx => OnEsc();
         InputManager.Input.Player.Characteristics.performed += ctx =>
         {
-            ToggleWindow(CharacteristicsMenu);
+            ToggleWindow(_characteristicsMenu);
             updateCharacteristics();
         };
     }
@@ -24,33 +21,37 @@ public class InGameMenu : MonoBehaviour
     void CloseAll()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        EscMenu.SetActive(false);
-        CharacteristicsMenu.SetActive(false);
-        Header.SetActive(false);
+        _escMenu.SetActive(false);
+        _characteristicsMenu.SetActive(false);
+        _header.SetActive(false);
         Time.timeScale = 1;
-        somethingOpened = false;
+        _somethingOpened = false;
     }
     void ToggleWindow(GameObject Window)
     {
-        if (EscMenu.activeSelf) return;
+        if (_escMenu.activeSelf) return;
         CloseAll();
         Window.SetActive(!Window.activeSelf);
         Time.timeScale = (Window.activeSelf) ? 0 : 1;
-        if (Window != EscMenu) Header.SetActive(Window.activeSelf);
-        if (Window.activeSelf) somethingOpened = true;
+        if (Window != _escMenu) _header.SetActive(Window.activeSelf);
+        if (Window.activeSelf) _somethingOpened = true;
     }
     void OnEsc()
     {
-        if (somethingOpened || EscMenu.activeSelf) CloseAll();
-        else ToggleWindow(EscMenu);
+        if (_somethingOpened || _escMenu.activeSelf) CloseAll();
+        else ToggleWindow(_escMenu);
     }
 
     //characteristics
     void updateCharacteristics()
     {
         Cursor.lockState = CursorLockMode.None;
-        foreach (Transform UIGroup in CharacteristicsMenu.transform)
-            if (UIGroup.name != "Buttons") foreach (Transform UICharacteristic in UIGroup)
-                    UICharacteristic.GetComponent<UICharacteristic>().SetCharacteristic(PlayerCharacteristics.GetGroup(UIGroup.name)?.GetCharacteristic(UICharacteristic.name), transform);
+        foreach (Transform UIGroup in _characteristicsMenu.transform)
+            if (UIGroup.name != "Buttons")
+                foreach (Transform UICharacteristic in UIGroup)
+                    UICharacteristic.GetComponent<UICharacteristic>().
+                        SetCharacteristic(
+                        _playerCharacteristics.GetGroup(UIGroup.name)?.
+                        GetCharacteristic(UICharacteristic.name), transform);
     }
 }

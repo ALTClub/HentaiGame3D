@@ -8,27 +8,23 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Characteistic")]
 public class Characteristic : ScriptableObject
 {
-    [SerializeField] string Name;
-    [SerializeField] string definition;
-    public string GetName { get { return Name; } }
-    public string GetDefinition { get { return definition; } }
-    [SerializeField] Sprite icon;
-    public Sprite GetIcon { get { return icon; } }
+    [SerializeField] string _name, _definition;
+    [SerializeField] Sprite _icon;
 
     [Header("Уровни владения")]
-    [SerializeField] level[] levels;
-    int currentLevel = 0;
-    /// <summary>
-    /// Текущий опыт владения хар-кой
-    /// </summary>
-    public level CurrentLevel { get { return levels[currentLevel]; } }
-    int experience;
+    [SerializeField] Level[] _levels;
+    int _currentLevel = 0;
+    int _experience;
+    public string Name => _name;
+    public string Definition => _definition;
+    public Sprite Icon => _icon;
+    public Level Level => _levels[_currentLevel];
     public int Experience
     {
-        get { return experience; }
+        get => _experience;
         set
         {
-            experience = value;
+            _experience = value;
             checkLevel();
         }
     }
@@ -37,20 +33,20 @@ public class Characteristic : ScriptableObject
     /// </summary>
     void checkLevel()
     {
-        if (currentLevel + 1 == levels.Count()) return;
-        if (levels[currentLevel + 1].valueToReach <= experience) currentLevel++;
+        if (_currentLevel + 1 == _levels.Count()) return;
+        if (_levels[_currentLevel + 1].valueToReach <= _experience) _currentLevel++;
         else return;
         checkLevel();
     }
     public float GetLevelProgress()
     {
-        float sum = levels[currentLevel + 1].valueToReach - levels[currentLevel].valueToReach;
-        float cur = experience - levels[currentLevel].valueToReach;
+        float sum = _levels[_currentLevel + 1].valueToReach - _levels[_currentLevel].valueToReach;
+        float cur = _experience - _levels[_currentLevel].valueToReach;
         return cur / sum;
     }
 }
 [Serializable]
-public struct level
+public struct Level
 {
     public string name;
     /// <summary>
