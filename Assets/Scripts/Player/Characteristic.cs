@@ -46,7 +46,7 @@ public class Characteristic : ScriptableObject
     {
         float sum = levels[currentLevel + 1].valueToReach - levels[currentLevel].valueToReach;
         float cur = experience - levels[currentLevel].valueToReach;
-        return sum / 100 * cur;
+        return cur / sum;
     }
 }
 [Serializable]

@@ -31,7 +31,7 @@ public class UICharacteristic : MonoBehaviour, IPointerEnterHandler, IPointerExi
     }
     private void OnDisable()
     {
-        Destroy(spawnedHint.gameObject);
+        Destroy(spawnedHint?.gameObject);
         spawnedHint = null;
     }
     private void Update()

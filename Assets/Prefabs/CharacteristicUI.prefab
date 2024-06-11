@@ -146,7 +146,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2833792459805743837}
   - component: {fileID: 6892570756787090807}
-  - component: {fileID: 2740863020834571818}
   m_Layer: 5
   m_Name: CharacteristicUI
   m_TagString: Untagged
@@ -196,23 +195,6 @@ MonoBehaviour:
   Name: {fileID: 1916323944186471399}
   Level: {fileID: 5255146338217337664}
   hintPrefab: {fileID: 7794699695898021930, guid: b0d7409bda407e34ebe763451e354f80, type: 3}
---- !u!114 &2740863020834571818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3189262894063403131}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls: []
 --- !u!1 &3447654608262773807
 GameObject:
   m_ObjectHideFlags: 0
