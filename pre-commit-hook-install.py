@@ -12,7 +12,7 @@ FILES = [
     '''),
     (f'{HOOKS}/post-commit', f'''
         #!/bin/sh
-        git lfs migrate import --include-ref="$HEAD" --above=500kb
+        git lfs migrate import --include-ref="$(git rev-parse --abbrev-ref HEAD)" --above=500kb
     ''')
 ]
 
