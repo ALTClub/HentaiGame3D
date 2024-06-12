@@ -249,6 +249,34 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Dialogs"",
+            ""id"": ""a7df561e-e55c-4ce2-b197-fb063c36405a"",
+            ""actions"": [
+                {
+                    ""name"": ""Skip"",
+                    ""type"": ""Button"",
+                    ""id"": ""e9eda0a3-3b70-47fe-b1ba-e413a4d95729"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""6544a883-8a34-45f2-9174-d03532dd42d1"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""Skip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -278,6 +306,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Player_Sellect = m_Player.FindAction("Sellect", throwIfNotFound: true);
         m_Player_Characteristics = m_Player.FindAction("Characteristics", throwIfNotFound: true);
         m_Player_EscMenu = m_Player.FindAction("EscMenu", throwIfNotFound: true);
+        // Dialogs
+        m_Dialogs = asset.FindActionMap("Dialogs", throwIfNotFound: true);
+        m_Dialogs_Skip = m_Dialogs.FindAction("Skip", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -421,6 +452,52 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // Dialogs
+    private readonly InputActionMap m_Dialogs;
+    private List<IDialogsActions> m_DialogsActionsCallbackInterfaces = new List<IDialogsActions>();
+    private readonly InputAction m_Dialogs_Skip;
+    public struct DialogsActions
+    {
+        private @PlayerInput m_Wrapper;
+        public DialogsActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Skip => m_Wrapper.m_Dialogs_Skip;
+        public InputActionMap Get() { return m_Wrapper.m_Dialogs; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(DialogsActions set) { return set.Get(); }
+        public void AddCallbacks(IDialogsActions instance)
+        {
+            if (instance == null || m_Wrapper.m_DialogsActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_DialogsActionsCallbackInterfaces.Add(instance);
+            @Skip.started += instance.OnSkip;
+            @Skip.performed += instance.OnSkip;
+            @Skip.canceled += instance.OnSkip;
+        }
+
+        private void UnregisterCallbacks(IDialogsActions instance)
+        {
+            @Skip.started -= instance.OnSkip;
+            @Skip.performed -= instance.OnSkip;
+            @Skip.canceled -= instance.OnSkip;
+        }
+
+        public void RemoveCallbacks(IDialogsActions instance)
+        {
+            if (m_Wrapper.m_DialogsActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IDialogsActions instance)
+        {
+            foreach (var item in m_Wrapper.m_DialogsActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_DialogsActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public DialogsActions @Dialogs => new DialogsActions(this);
     private int m_PCSchemeIndex = -1;
     public InputControlScheme PCScheme
     {
@@ -438,5 +515,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnSellect(InputAction.CallbackContext context);
         void OnCharacteristics(InputAction.CallbackContext context);
         void OnEscMenu(InputAction.CallbackContext context);
+    }
+    public interface IDialogsActions
+    {
+        void OnSkip(InputAction.CallbackContext context);
     }
 }

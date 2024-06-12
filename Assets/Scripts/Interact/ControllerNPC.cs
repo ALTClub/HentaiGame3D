@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class ControllerNPC : Interactable
 {
+    [SerializeField] Dialog dialog;
     public override void Interact()
     {
-        throw new System.NotImplementedException();
+        DialogWindow.PlayDialog.Invoke(dialog);
     }
 }

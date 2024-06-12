@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PromptUI : MonoBehaviour
 {
-    [SerializeField] Text control, prompt;
+    [SerializeField] TMP_Text control, prompt;
 
     [SerializeField] Sprite selectedImg, commonImg;
 

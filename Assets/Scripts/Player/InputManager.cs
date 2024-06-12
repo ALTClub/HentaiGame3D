@@ -7,14 +7,13 @@ public class InputManager : MonoBehaviour
     void Awake()
     {
         Input = new PlayerInput();
-        this.EnableControls();
+        EnableControls();
     }
 
     private void OnDisable()
     {
-        this.DisableControls();
+        DisableControls();
     }
-
-    public void DisableControls() => Input.Disable();
-    public void EnableControls() => Input.Enable();
+    public static void DisableControls() => Input.Disable();
+    public static void EnableControls() => Input.Player.Enable();
 }
