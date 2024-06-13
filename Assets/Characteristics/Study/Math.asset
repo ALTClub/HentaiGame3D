@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25161eb82cbb7a04eb096116078617f1, type: 3}
   m_Name: Math
   m_EditorClassIdentifier: 
-  Name: "\u041C\u0430\u0442\u0435\u043C\u0430\u0442\u0438\u043A\u0430"
-  definition: "\u041D\u0430\u0443\u043A\u0430 \u043E \u0447\u0438\u0441\u043B\u0430\u0445"
+  _name: "\u041C\u0430\u0442\u0435\u043C\u0430\u0442\u0438\u043A\u0430"
+  _definition: "\u041D\u0430\u0443\u043A\u0430 \u043E \u0447\u0438\u0441\u043B\u0430\u0445"
   icon: {fileID: 0}
-  levels:
+  _levels:
   - name: "\u041D\u0435\u0443\u0434"
     valueToReach: 0
     description: "\u042F \u043D\u0438\u0447\u0435\u0433\u043E \u043D\u0435 \u043F\u043E\u043D\u0438\u043C\u0430\u044E"
