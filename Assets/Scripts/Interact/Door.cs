@@ -3,11 +3,17 @@ using UnityEngine;
 
 public class Door : Interactable
 {
-    [SerializeField] bool isOpen = false;
-    [SerializeField] float rotateAngle;
+    [SerializeField]
+    bool isOpen = false;
 
-    [SerializeField] float rotateSpeed;
-    [SerializeField] GameObject door;
+    [SerializeField]
+    float rotateAngle;
+
+    [SerializeField]
+    float rotateSpeed;
+
+    [SerializeField]
+    GameObject door;
 
     Coroutine rotator;
     Quaternion rotation;
@@ -24,7 +30,8 @@ public class Door : Interactable
 
     void toggle()
     {
-        if (rotator != null) StopCoroutine(rotator);
+        if (rotator != null)
+            StopCoroutine(rotator);
         rotator = StartCoroutine(toggleDoor());
         isOpen = !isOpen;
         prompt = (isOpen) ? "Закрыть" : "Открыть";
@@ -37,11 +44,20 @@ public class Door : Interactable
         while (door.transform.localRotation != targetRotation)
         {
             t += Time.fixedDeltaTime;
-            door.transform.localRotation = Quaternion.Lerp(door.transform.localRotation, targetRotation, t / rotateSpeed);
+            door.transform.localRotation = Quaternion.Lerp(
+                door.transform.localRotation,
+                targetRotation,
+                t / rotateSpeed
+            );
             yield return new WaitForFixedUpdate();
         }
     }
-    public void StopRotation() { if (rotator != null) StopCoroutine(rotator); }
+
+    public void StopRotation()
+    {
+        if (rotator != null)
+            StopCoroutine(rotator);
+    }
 
     private void OnDrawGizmos()
     {

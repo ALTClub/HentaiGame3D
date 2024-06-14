@@ -4,16 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-
 [CreateAssetMenu(menuName = "Characteistic")]
 public class Characteristic : ScriptableObject
 {
-    [SerializeField] string _name, _definition;
-    [SerializeField] Sprite _icon;
+    [SerializeField]
+    string _name,
+        _definition;
+
+    [SerializeField]
+    Sprite _icon;
 
     [Header("Уровни владения")]
-    [SerializeField] Level[] _levels;
-    int _currentLevel;
+    [SerializeField]
+    Level[] _levels;
+    int _currentLevel = 0;
     int _experience;
     public string Name => _name;
     public string Definition => _definition;
@@ -33,16 +37,21 @@ public class Characteristic : ScriptableObject
             checkNewLevel();
         }
     }
+
     /// <summary>
     /// Проверка на возможность повышения уровня, в случае успеха повышает уровень до соответствующего опыту
     /// </summary>
     void checkNewLevel()
     {
-        if (_currentLevel + 1 == _levels.Count()) return;
-        if (_levels[_currentLevel + 1].valueToReach <= _experience) _currentLevel++;
-        else return;
-        checkNewLevel();
+        if (_currentLevel + 1 == _levels.Count())
+            return;
+        if (_levels[_currentLevel + 1].valueToReach <= _experience)
+            _currentLevel++;
+        else
+            return;
+        checkLevel();
     }
+
     public float GetLevelProgress()
     {
         float sum = _levels[_currentLevel + 1].valueToReach - _levels[_currentLevel].valueToReach;
@@ -59,14 +68,18 @@ public class Characteristic : ScriptableObject
         return false;
     }
 }
+
 [Serializable]
 public struct Level
 {
     public string name;
+
     /// <summary>
     /// Сколько опыта необходимо для получения этого уровня
     /// </summary>
     public int valueToReach;
-    [TextArea] public string description;
+
+    [TextArea]
+    public string description;
     public Color color;
 }

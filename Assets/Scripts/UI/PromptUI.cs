@@ -6,11 +6,16 @@ using UnityEngine.UI;
 
 public class PromptUI : MonoBehaviour
 {
-    [SerializeField] TMP_Text control, prompt;
+    [SerializeField]
+    Text control,
+        prompt;
 
-    [SerializeField] Sprite selectedImg, commonImg;
+    [SerializeField]
+    Sprite selectedImg,
+        commonImg;
 
-    [SerializeField] Image img;
+    [SerializeField]
+    Image img;
 
     public void SetText(string prompt)
     {

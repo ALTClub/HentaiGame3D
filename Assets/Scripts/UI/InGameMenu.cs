@@ -4,10 +4,16 @@ using UnityEngine;
 
 public class InGameMenu : MonoBehaviour
 {
-    [SerializeField] GameObject _escMenu, _header, _characteristicsMenu;
+    [SerializeField]
+    GameObject _escMenu,
+        _header,
+        _characteristicsMenu;
+
     [Header("Характеристики")]
-    [SerializeField] PlayerCharacteristics _playerCharacteristics;
+    [SerializeField]
+    PlayerCharacteristics _playerCharacteristics;
     bool _somethingOpened = false;
+
     private void Start()
     {
         InputManager.Input.Player.EscMenu.performed += ctx => OnEsc();
@@ -17,6 +23,7 @@ public class InGameMenu : MonoBehaviour
             updateCharacteristics();
         };
     }
+
     //windows
     void CloseAll()
     {
@@ -27,19 +34,26 @@ public class InGameMenu : MonoBehaviour
         Time.timeScale = 1;
         _somethingOpened = false;
     }
+
     void ToggleWindow(GameObject Window)
     {
-        if (_escMenu.activeSelf) return;
+        if (_escMenu.activeSelf)
+            return;
         CloseAll();
         Window.SetActive(!Window.activeSelf);
         Time.timeScale = (Window.activeSelf) ? 0 : 1;
-        if (Window != _escMenu) _header.SetActive(Window.activeSelf);
-        if (Window.activeSelf) _somethingOpened = true;
+        if (Window != _escMenu)
+            _header.SetActive(Window.activeSelf);
+        if (Window.activeSelf)
+            _somethingOpened = true;
     }
+
     void OnEsc()
     {
-        if (_somethingOpened || _escMenu.activeSelf) CloseAll();
-        else ToggleWindow(_escMenu);
+        if (_somethingOpened || _escMenu.activeSelf)
+            CloseAll();
+        else
+            ToggleWindow(_escMenu);
     }
 
     //characteristics
@@ -49,9 +63,11 @@ public class InGameMenu : MonoBehaviour
         foreach (Transform UIGroup in _characteristicsMenu.transform)
             if (UIGroup.name != "Buttons")
                 foreach (Transform UICharacteristic in UIGroup)
-                    UICharacteristic.GetComponent<UICharacteristic>().
-                        SetCharacteristic(
-                        _playerCharacteristics.GetGroup(UIGroup.name)?.
-                        GetCharacteristic(UICharacteristic.name), transform);
+                    UICharacteristic
+                        .GetComponent<UICharacteristic>()
+                        .SetCharacteristic(
+                            _playerCharacteristics.GetGroup(UIGroup.name)?.GetCharacteristic(UICharacteristic.name),
+                            transform
+                        );
     }
 }

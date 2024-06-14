@@ -6,13 +6,18 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] Transform model;
-    [SerializeField] CameraScript cam;
-
-    [SerializeField] float rotationSpeed;
+    [SerializeField]
+    Transform model;
 
     [SerializeField]
-    private float Speed, JumpForce;
+    CameraScript cam;
+
+    [SerializeField]
+    float rotationSpeed;
+
+    [SerializeField]
+    private float Speed,
+        JumpForce;
 
     [Range(1, 10)]
     [SerializeField]
@@ -44,12 +49,17 @@ public class PlayerMovement : MonoBehaviour
 
         rb.AddRelativeForce(direction * Speed * Time.fixedDeltaTime, ForceMode.Impulse);
 
-        if (!InputManager.Input.Player.Movement.IsPressed()) return;
+        if (!InputManager.Input.Player.Movement.IsPressed())
+            return;
 
         cam.Rotate(rotationSpeed, transform); //поворачиваем игрока в центр камеры
 
         //поворачиваем модельку в сторону движения
-        model.localRotation = Quaternion.Slerp(model.localRotation, Quaternion.LookRotation(direction), rotationSpeed * Time.fixedDeltaTime);
+        model.localRotation = Quaternion.Slerp(
+            model.localRotation,
+            Quaternion.LookRotation(direction),
+            rotationSpeed * Time.fixedDeltaTime
+        );
     }
 
     private void OnCollisionEnter(UnityEngine.Collision collision)

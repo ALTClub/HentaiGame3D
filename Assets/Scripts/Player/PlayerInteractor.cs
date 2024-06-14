@@ -7,7 +7,8 @@ using UnityEngine.Events;
 
 public class PlayerInteractor : MonoBehaviour
 {
-    [SerializeField] string interactableTag;
+    [SerializeField]
+    string interactableTag;
 
     private List<Interactable> interactables = new List<Interactable>();
     public static UnityEvent<List<Interactable>> OnInteractUpdate = new UnityEvent<List<Interactable>>();
@@ -25,7 +26,8 @@ public class PlayerInteractor : MonoBehaviour
     void select(int axis)
     {
         axis /= Math.Abs(axis);
-        if (currentInteract + axis >= interactables.Count || currentInteract + axis < 0) return;
+        if (currentInteract + axis >= interactables.Count || currentInteract + axis < 0)
+            return;
         currentInteract += axis;
         OnSellectInteraction?.Invoke(currentInteract);
     }

@@ -14,6 +14,8 @@ public class InputManager : MonoBehaviour
     {
         DisableControls();
     }
-    public static void DisableControls() => Input.Disable();
-    public static void EnableControls() => Input.Player.Enable();
+
+    public void DisableControls() => Input.Disable();
+
+    public void EnableControls() => Input.Enable();
 }

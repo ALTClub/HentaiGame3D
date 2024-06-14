@@ -6,10 +6,14 @@ using UnityEngine;
 [Serializable]
 public class CharacteristicsGroup
 {
-    [SerializeField] string _name;
-    [SerializeField] Characteristic[] _characteristics;
+    [SerializeField]
+    string _name;
+
+    [SerializeField]
+    Characteristic[] _characteristics;
     public string Name => _name;
     public Characteristic[] GetAllChars => _characteristics;
+
     /// <summary>
     /// Возвращает характеристику с соответствующим именем
     /// </summary>

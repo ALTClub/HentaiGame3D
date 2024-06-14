@@ -7,9 +7,14 @@ using UnityEngine.XR;
 
 public class InteractUI : MonoBehaviour
 {
-    [SerializeField] Transform promptsPoint;
-    [SerializeField] GameObject promptPrefab;
-    [SerializeField] float spacing;
+    [SerializeField]
+    Transform promptsPoint;
+
+    [SerializeField]
+    GameObject promptPrefab;
+
+    [SerializeField]
+    float spacing;
 
     private List<GameObject> promptList = new List<GameObject>();
 
@@ -54,7 +59,8 @@ public class InteractUI : MonoBehaviour
 
     void center()
     {
-        if (promptList.Count == 0) return;
+        if (promptList.Count == 0)
+            return;
 
         for (int i = 0; i < promptList.Count; i++)
         {

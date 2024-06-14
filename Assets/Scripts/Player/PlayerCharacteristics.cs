@@ -6,8 +6,9 @@ using UnityEngine.Events;
 
 public class PlayerCharacteristics : MonoBehaviour
 {
-    [SerializeField] CharacteristicsGroup[] _characteristicsGroups;
-    Characteristic _selected;
+    [SerializeField]
+    CharacteristicsGroup[] _characteristicsGroups;
+
     /// <summary>
     /// Возвращает группу характеристик с соответствующим именем
     /// </summary>
@@ -18,6 +19,7 @@ public class PlayerCharacteristics : MonoBehaviour
                 return group;
         return null;
     }
+
     public CharacteristicsGroup[] GetAllGroups => _characteristicsGroups;
     public void SelectCharacteristic(string name)
     {
@@ -35,4 +37,3 @@ public class PlayerCharacteristics : MonoBehaviour
         if (_selected == null) return;
         _selected.Experience += value;
     }
-}
