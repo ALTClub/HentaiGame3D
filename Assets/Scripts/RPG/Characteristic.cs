@@ -19,7 +19,7 @@ public class Characteristic : ScriptableObject
     public string Definition => _definition;
     public Sprite Icon => _icon;
     public Level Level => _levels[_currentLevel];
-    public void Initialize()
+    private void Awake()
     {
         _currentLevel = 0;
         _experience = 0;

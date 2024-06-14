@@ -30,15 +30,6 @@ public class PlayerCharacteristics : MonoBehaviour
                 }
         _selected = null;
     }
-    private void Start()
-    {
-        Initialize();
-    }
-    void Initialize()
-    {
-        foreach (var group in _characteristicsGroups)
-            group.Initialize();
-    }
     public void AddExperience(int value)
     {
         if (_selected == null) return;

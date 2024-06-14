@@ -20,8 +20,4 @@ public class CharacteristicsGroup
                 return characteristic;
         return null;
     }
-    public void Initialize()
-    {
-        foreach (var characteristic in _characteristics) characteristic.Initialize();
-    }
 }
