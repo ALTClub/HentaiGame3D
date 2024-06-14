@@ -9,20 +9,20 @@ using UnityEngine.Events;
 public struct Option
 {
     [SerializeField] string _name;
-    [SerializeField] bool isAndConditions;
-    [SerializeField] Condition.Characteristic[] characteristicConditions;
-    [SerializeField] UnityEvent OnClick;
-    [SerializeField] Monolog continuation;
-
-    public string Name => _name;
+    [SerializeField] bool _isAndConditions;
+    [SerializeField] Condition.Characteristic[] _characteristicConditions;
+    [SerializeField] UnityEvent _onClick;
+    [SerializeField] Monolog _continuation;
 
     TMP_Text _nameField;
     TMP_Text _dialogField;
+    public string Name => _name;
+
     public bool CheckConditions()
     {
-        Condition[] conditions = characteristicConditions;
+        Condition[] conditions = _characteristicConditions;
         if (conditions.Length == 0) return true;
-        if (isAndConditions)
+        if (_isAndConditions)
         {
             foreach (Condition condition in conditions)
                 if (!condition.check()) return false;
@@ -37,8 +37,8 @@ public struct Option
     }
     public void Click()
     {
-        OnClick?.Invoke();
-        continuation.Start(_dialogField, _nameField);
+        _onClick?.Invoke();
+        _continuation.Start(_dialogField, _nameField);
     }
 
     public void Start(TMP_Text nameField, TMP_Text dialogField)
@@ -52,49 +52,52 @@ public struct Option
 [Serializable]
 public struct Phrase
 {
-    [SerializeField][TextArea(3, 15)] private string _text;
-    [SerializeField] private AudioClip _voiceActing;
-    public UnityEvent OnReaded;
-    TMP_Text dialogField;
-    Delegate next;
+    [SerializeField][TextArea(3, 15)] string _text;
+    [SerializeField] AudioClip _voiceActing;
+    [SerializeField] UnityEvent _onReaded;
+
+    TMP_Text _dialogField;
+    Delegate _next;
+
     public void Skip()
     {
         if (DialogWindow.reading != null)
         {
-            dialogField.text = _text;
-            DialogWindow.Read.Invoke("", OnReaded);
+            _dialogField.text = _text;
+            DialogWindow.Read.Invoke("", _onReaded);
         }
         else
         {
             Dialog.OnSkip.RemoveListener(Skip);
-            next.DynamicInvoke();
+            _next.DynamicInvoke();
         }
     }
     public void Start(AudioSource source, TMP_Text dialogField, Delegate next)
     {
-        this.next = next;
-        this.dialogField = dialogField;
-        Dialog.OnSkip.AddListener(Skip);
+        _next = next;
+        _dialogField = dialogField;
         if (_voiceActing != null) source.PlayOneShot(_voiceActing);
-        DialogWindow.Read.Invoke(_text, OnReaded);
+        Dialog.OnSkip.AddListener(Skip);
+        DialogWindow.Read.Invoke(_text, _onReaded);
     }
 }
 
 [Serializable]
 public struct Monolog
 {
-    [SerializeField] private string _name;
-    [SerializeField] private Phrase[] _phrases;
-    [SerializeField] AudioSource source;
+    [SerializeField] string _name;
+    [SerializeField] Phrase[] _phrases;
+    [SerializeField] AudioSource _source;
     [SerializeField] List<Option> _options;
-    int currentPhrase;
-    TMP_Text dialogField;
+
+    TMP_Text _dialogField;
+    int _currentPhrase;
     public void NextPhrase()
     {
-        if (currentPhrase + 1 == _phrases.Length) return;
-        currentPhrase++;
-        _phrases[currentPhrase].Start(source, dialogField, new Action(NextPhrase));
-        if (currentPhrase + 1 == _phrases.Length)
+        if (_currentPhrase + 1 == _phrases.Length) return;
+        _currentPhrase++;
+        _phrases[_currentPhrase].Start(_source, _dialogField, new Action(NextPhrase));
+        if (_currentPhrase + 1 == _phrases.Length)
         {
             if (_options.Count > 0) DialogWindow.SpawnOptions.Invoke(_options);
             else DialogWindow.Close.Invoke();
@@ -102,8 +105,8 @@ public struct Monolog
     }
     public void Start(TMP_Text dialogField, TMP_Text nameField)
     {
-        currentPhrase = -1;
-        this.dialogField = dialogField;
+        _currentPhrase = -1;
+        _dialogField = dialogField;
         nameField.text = _name;
         NextPhrase();
     }
@@ -116,25 +119,8 @@ public class Dialog
     [SerializeField] private List<Option> _options;
     public static UnityEvent OnSkip = new();
 
-
-
     public void Start()
     {
         DialogWindow.SpawnOptions.Invoke(_options);
     }
-
-
-
-
-
-
-
-
-    /*
-    public void NextMonolog()
-    {
-        if (currentMonolog >= _monolog.Length) stop.DynamicInvoke();
-        else _monolog[currentMonolog].Start(mono, dialogField, nameField, new Action(NextMonolog));
-        currentMonolog++;
-    }*/
 }

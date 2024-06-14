@@ -12,11 +12,11 @@ public abstract class Condition
         [SerializeField] string _name, _group, _level;
         public override bool check()
         {
-            return GameObject.FindGameObjectWithTag("Player").
-                GetComponent<PlayerCharacteristics>().
-                GetGroup(_group).
-                GetCharacteristic(_name).
-                CheckLevel(_level);
+            return GameObject.FindGameObjectWithTag("Player")
+                .GetComponent<PlayerCharacteristics>()
+                .GetGroup(_group)
+                .GetCharacteristic(_name)
+                .CheckLevel(_level);
         }
     }
 }

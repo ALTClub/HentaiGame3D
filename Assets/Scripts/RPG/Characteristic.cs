@@ -13,7 +13,7 @@ public class Characteristic : ScriptableObject
 
     [Header("Уровни владения")]
     [SerializeField] Level[] _levels;
-    int _currentLevel = 0;
+    int _currentLevel;
     int _experience;
     public string Name => _name;
     public string Definition => _definition;
@@ -53,8 +53,8 @@ public class Characteristic : ScriptableObject
     {
         for (int i = 0; i <= _currentLevel; i++)
         {
-            Debug.Log(i);
-            if (_levels[i].name == level) return true;
+            if (_levels[i].name == level)
+                return true;
         }
         return false;
     }

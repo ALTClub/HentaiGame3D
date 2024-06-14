@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class PlayerCharacteristics : MonoBehaviour
 {
     [SerializeField] CharacteristicsGroup[] _characteristicsGroups;
-    Characteristic selected;
+    Characteristic _selected;
     /// <summary>
     /// Возвращает группу характеристик с соответствующим именем
     /// </summary>
@@ -19,29 +19,29 @@ public class PlayerCharacteristics : MonoBehaviour
         return null;
     }
     public CharacteristicsGroup[] GetAllGroups => _characteristicsGroups;
-    public void GetCharacteristic(string name)
+    public void SelectCharacteristic(string name)
     {
         foreach (CharacteristicsGroup group in _characteristicsGroups)
             foreach (Characteristic characteristic in group.GetAllChars)
                 if (characteristic.Name == name)
                 {
-                    selected = characteristic;
+                    _selected = characteristic;
                     return;
                 }
-        selected = null;
+        _selected = null;
     }
     private void Start()
     {
         Initialize();
-        //GetGroup("Учёба").GetCharacteristic("Математика").Experience = 5;
     }
-    void Initialize(int value = 0)
+    void Initialize()
     {
-        foreach (var group in _characteristicsGroups) group.Initialize();
+        foreach (var group in _characteristicsGroups)
+            group.Initialize();
     }
     public void AddExperience(int value)
     {
-        if (selected == null) return;
-        selected.Experience += value;
+        if (_selected == null) return;
+        _selected.Experience += value;
     }
 }
