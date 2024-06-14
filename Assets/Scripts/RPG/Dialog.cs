@@ -1,63 +1,82 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+
+[Serializable]
+public struct Option
+{
+    [SerializeField] string _name;
+    [SerializeField] bool isAndConditions;
+    [SerializeField] Condition.Characteristic[] characteristicConditions;
+    [SerializeField] UnityEvent OnClick;
+    [SerializeField] Monolog continuation;
+
+    public string Name => _name;
+
+    TMP_Text _nameField;
+    TMP_Text _dialogField;
+    public bool CheckConditions()
+    {
+        Condition[] conditions = characteristicConditions;
+        if (conditions.Length == 0) return true;
+        if (isAndConditions)
+        {
+            foreach (Condition condition in conditions)
+                if (!condition.check()) return false;
+            return true;
+        }
+        else
+        {
+            foreach (Condition condition in conditions)
+                if (condition.check()) return true;
+            return false;
+        }
+    }
+    public void Click()
+    {
+        OnClick?.Invoke();
+        continuation.Start(_dialogField, _nameField);
+    }
+
+    public void Start(TMP_Text nameField, TMP_Text dialogField)
+    {
+        _nameField = nameField;
+        _dialogField = dialogField;
+    }
+}
+
 
 [Serializable]
 public struct Phrase
 {
     [SerializeField][TextArea(3, 15)] private string _text;
     [SerializeField] private AudioClip _voiceActing;
-    [SerializeField] static float punctuationDelay = 0.6f, lineDelay = 0.3f, charDelay = 0.1f;
     public UnityEvent OnReaded;
     TMP_Text dialogField;
-    Coroutine reading;
     Delegate next;
-    AudioSource source;
     public void Skip()
     {
-        if (reading != null) dialogField.text = _text;
+        if (DialogWindow.reading != null)
+        {
+            dialogField.text = _text;
+            DialogWindow.Read.Invoke("", OnReaded);
+        }
         else
         {
             Dialog.OnSkip.RemoveListener(Skip);
             next.DynamicInvoke();
         }
-        reading = null;
     }
-    public IEnumerator Read()
+    public void Start(AudioSource source, TMP_Text dialogField, Delegate next)
     {
-        if (_voiceActing != null) source.PlayOneShot(_voiceActing);
-        dialogField.text = "";
-        foreach (char sym in _text)
-        {
-            dialogField.text += sym;
-            switch (sym)
-            {
-                case '.':
-                case ',':
-                case '!':
-                case '?':
-                    yield return new WaitForSeconds(punctuationDelay);// время для паузы
-                    break;
-                case '\n':
-                    yield return new WaitForSeconds(lineDelay);// время для паузы
-                    break;
-                default:
-                    yield return new WaitForSeconds(charDelay);// время для вывода след. буквы
-                    break;
-            }
-        }
-        reading = null;
-        OnReaded?.Invoke();
-    }
-    public void Start(MonoBehaviour mono, AudioSource source, TMP_Text dialogField, Delegate next)
-    {
-        this.source = source;
         this.next = next;
         this.dialogField = dialogField;
         Dialog.OnSkip.AddListener(Skip);
-        reading = mono.StartCoroutine(Read());
+        if (_voiceActing != null) source.PlayOneShot(_voiceActing);
+        DialogWindow.Read.Invoke(_text, OnReaded);
     }
 }
 
@@ -67,49 +86,55 @@ public struct Monolog
     [SerializeField] private string _name;
     [SerializeField] private Phrase[] _phrases;
     [SerializeField] AudioSource source;
+    [SerializeField] List<Option> _options;
     int currentPhrase;
-    MonoBehaviour mono;
-    Delegate nextMonolog;
     TMP_Text dialogField;
     public void NextPhrase()
     {
+        if (currentPhrase + 1 == _phrases.Length) return;
         currentPhrase++;
-        if (currentPhrase >= _phrases.Length) nextMonolog.DynamicInvoke();
-        else _phrases[currentPhrase].Start(mono, source, dialogField, new Action(NextPhrase));
+        _phrases[currentPhrase].Start(source, dialogField, new Action(NextPhrase));
+        if (currentPhrase + 1 == _phrases.Length)
+        {
+            if (_options.Count > 0) DialogWindow.SpawnOptions.Invoke(_options);
+            else DialogWindow.Close.Invoke();
+        }
     }
-    public void Start(MonoBehaviour mono, TMP_Text dialogField, TMP_Text nameField, Delegate nextMonolog)
+    public void Start(TMP_Text dialogField, TMP_Text nameField)
     {
-        this.mono = mono;
-        this.dialogField = dialogField;
         currentPhrase = -1;
-        this.nextMonolog = nextMonolog;
+        this.dialogField = dialogField;
         nameField.text = _name;
         NextPhrase();
     }
 }
 
+
 [Serializable]
 public class Dialog
 {
-    [SerializeField] private Monolog[] _dialog;
+    [SerializeField] private List<Option> _options;
     public static UnityEvent OnSkip = new();
-    MonoBehaviour mono;
-    TMP_Text dialogField, nameField;
-    int currentMonolog;
-    Delegate stop;
+
+
+
+    public void Start()
+    {
+        DialogWindow.SpawnOptions.Invoke(_options);
+    }
+
+
+
+
+
+
+
+
+    /*
     public void NextMonolog()
     {
-        if (currentMonolog >= _dialog.Length) stop.DynamicInvoke();
-        else _dialog[currentMonolog].Start(mono, dialogField, nameField, new Action(NextMonolog));
+        if (currentMonolog >= _monolog.Length) stop.DynamicInvoke();
+        else _monolog[currentMonolog].Start(mono, dialogField, nameField, new Action(NextMonolog));
         currentMonolog++;
-    }
-    public void Start(MonoBehaviour mono, TMP_Text dialogField, TMP_Text nameField, Delegate stop)
-    {
-        currentMonolog = 0;
-        this.mono = mono;
-        this.nameField = nameField;
-        this.dialogField = dialogField;
-        this.stop = stop;
-        NextMonolog();
-    }
+    }*/
 }
