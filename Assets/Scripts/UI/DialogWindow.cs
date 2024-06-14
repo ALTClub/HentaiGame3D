@@ -1,3 +1,4 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,53 +9,59 @@ using UnityEngine.UI;
 
 public class DialogWindow : MonoBehaviour
 {
-    [SerializeField] GameObject window;
-    [SerializeField] private TMP_Text _name;
-    [SerializeField] private TMP_Text _text;
+    [SerializeField] GameObject _window;
+    [SerializeField] TMP_Text _name, _text;
+    [SerializeField] CinemachineFreeLook _cam;
 
     [Header("Задержки")]
-    [SerializeField][Range(0, 0.5f)] private float charDelay = 0.05f;
-    [SerializeField][Range(0, 1)] private float punctuationDelay;
-    [SerializeField][Range(0, 1)] private float lineDelay;
+    [SerializeField][Range(0, 0.5f)] float _charDelay = 0.05f;
+    [SerializeField][Range(0, 1)] float _punctuationDelay;
+    [SerializeField][Range(0, 1)] float _lineDelay;
 
     [Header("Варианты")]
     [SerializeField] GameObject _optionPrefab;
-    [SerializeField] Transform optionPose;
-    [SerializeField] float spacing;
+    [SerializeField] Transform _optionPose;
+    [SerializeField] float _spacing;
+    List<GameObject> _optionList = new();
 
     public static UnityEvent<Dialog> PlayDialog = new();
     public static UnityEvent<String, UnityEvent> Read = new();
     public static UnityEvent<List<Option>> SpawnOptions = new();
-    public static UnityEvent Close = new();
+    public static UnityEvent Stop = new();
 
-    private void OnEnable()
+    void OnEnable()
     {
-        PlayDialog.AddListener(Initialize);
+        PlayDialog.AddListener(Play);
         Read.AddListener(Reader);
         SpawnOptions.AddListener(spawnOptions);
+        Stop.AddListener(Close);
     }
-    private void OnDisable()
+    void OnDisable()
     {
         InputManager.DisableControls();
         InputManager.EnableControls();
-        window.SetActive(false);
+        _window.SetActive(false);
     }
-    public void Initialize(Dialog dialog)
+    // base
+    public void Play(Dialog dialog)
     {
+        _cam.enabled = false;
+
         InputManager.DisableControls();
         InputManager.Input.Dialogs.Enable();
         InputManager.Input.Dialogs.Skip.performed += ctx => Dialog.OnSkip.Invoke();
 
         Cursor.lockState = CursorLockMode.None;
-        dialog.Start();
-        window.SetActive(true);
+        dialog.Open();
+        _window.SetActive(true);
     }
-    public void close()
+    public void Close()
     {
         InputManager.DisableControls();
         InputManager.EnableControls();
         Cursor.lockState = CursorLockMode.Locked;
-        window.SetActive(false);
+        _window.SetActive(false);
+        _cam.enabled = true;
     }
     public static Coroutine reading { get; private set; }
     void Reader(string text, UnityEvent OnReaded)
@@ -75,32 +82,32 @@ public class DialogWindow : MonoBehaviour
                 case ',':
                 case '!':
                 case '?':
-                    yield return new WaitForSeconds(punctuationDelay);// время для паузы
+                    yield return new WaitForSeconds(_punctuationDelay);// время для паузы
                     break;
                 case '\n':
-                    yield return new WaitForSeconds(lineDelay);// время для паузы
+                    yield return new WaitForSeconds(_lineDelay);// время для паузы
                     break;
                 default:
-                    yield return new WaitForSeconds(charDelay);// время для вывода след. буквы
+                    yield return new WaitForSeconds(_charDelay);// время для вывода след. буквы
                     break;
             }
         }
         reading = null;
         OnReaded.Invoke();
     }
-    List<GameObject> optionList = new();
+    // options
     void closeOptions()
     {
-        foreach (GameObject option in optionList) Destroy(option.gameObject);
-        optionList.Clear();
+        foreach (GameObject option in _optionList) Destroy(option.gameObject);
+        _optionList.Clear();
     }
     void spawnOptions(List<Option> options)
     {
         foreach (var option in options)
         {
-            option.Start(_name, _text);
+            option.Open(_name, _text);
             GameObject Option = Instantiate(_optionPrefab, transform.position, Quaternion.identity);
-            optionList.Add(Option);
+            _optionList.Add(Option);
             Option.GetComponentInChildren<TMP_Text>().text = option.Name;
 
             Button button = Option.GetComponent<Button>();
@@ -110,24 +117,24 @@ public class DialogWindow : MonoBehaviour
             button.onClick.AddListener(closeOptions);
             button.onClick.AddListener(option.Click);
 
-            Option.transform.SetParent(window.transform);
+            Option.transform.SetParent(_window.transform);
             center();
         }
     }
     void center()
     {
-        if (optionList.Count == 0) return;
+        if (_optionList.Count == 0) return;
 
-        for (int i = 0; i < optionList.Count; i++)
+        for (int i = 0; i < _optionList.Count; i++)
         {
-            Vector3 pos = optionPose.position;
-            pos.y += spacing * i;
-            optionList[i].transform.position = pos;
+            Vector3 pos = _optionPose.position;
+            pos.y += _spacing * i;
+            _optionList[i].transform.position = pos;
         }
 
-        float center = (optionList[optionList.Count - 1].transform.position.y - optionPose.position.y) / 2;
+        float center = (_optionList[_optionList.Count - 1].transform.position.y - _optionPose.position.y) / 2;
 
-        foreach (var item in optionList)
+        foreach (var item in _optionList)
         {
             item.transform.Translate(0, -center, 0);
         }

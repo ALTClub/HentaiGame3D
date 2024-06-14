@@ -25,23 +25,23 @@ public struct Option
         if (_isAndConditions)
         {
             foreach (Condition condition in conditions)
-                if (!condition.check()) return false;
+                if (!condition.Сheck()) return false;
             return true;
         }
         else
         {
             foreach (Condition condition in conditions)
-                if (condition.check()) return true;
+                if (condition.Сheck()) return true;
             return false;
         }
     }
     public void Click()
     {
         _onClick?.Invoke();
-        _continuation.Start(_dialogField, _nameField);
+        _continuation.Open(_dialogField, _nameField);
     }
 
-    public void Start(TMP_Text nameField, TMP_Text dialogField)
+    public void Open(TMP_Text nameField, TMP_Text dialogField)
     {
         _nameField = nameField;
         _dialogField = dialogField;
@@ -72,7 +72,7 @@ public struct Phrase
             _next.DynamicInvoke();
         }
     }
-    public void Start(AudioSource source, TMP_Text dialogField, Delegate next)
+    public void Open(AudioSource source, TMP_Text dialogField, Delegate next)
     {
         _next = next;
         _dialogField = dialogField;
@@ -96,14 +96,14 @@ public struct Monolog
     {
         if (_currentPhrase + 1 == _phrases.Length) return;
         _currentPhrase++;
-        _phrases[_currentPhrase].Start(_source, _dialogField, new Action(NextPhrase));
+        _phrases[_currentPhrase].Open(_source, _dialogField, new Action(NextPhrase));
         if (_currentPhrase + 1 == _phrases.Length)
         {
             if (_options.Count > 0) DialogWindow.SpawnOptions.Invoke(_options);
-            else DialogWindow.Close.Invoke();
+            else DialogWindow.Stop.Invoke();
         }
     }
-    public void Start(TMP_Text dialogField, TMP_Text nameField)
+    public void Open(TMP_Text dialogField, TMP_Text nameField)
     {
         _currentPhrase = -1;
         _dialogField = dialogField;
@@ -119,7 +119,7 @@ public class Dialog
     [SerializeField] private List<Option> _options;
     public static UnityEvent OnSkip = new();
 
-    public void Start()
+    public void Open()
     {
         DialogWindow.SpawnOptions.Invoke(_options);
     }

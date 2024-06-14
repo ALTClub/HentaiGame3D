@@ -5,12 +5,12 @@ using UnityEngine;
 
 public abstract class Condition
 {
-    public abstract bool check();
+    public abstract bool Сheck();
     [Serializable]
     public class Characteristic : Condition
     {
         [SerializeField] string _name, _group, _level;
-        public override bool check()
+        public override bool Сheck()
         {
             return GameObject.FindGameObjectWithTag("Player")
                 .GetComponent<PlayerCharacteristics>()
