@@ -189,12 +189,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e3891045e04fac49987e39462577e8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  progress: {fileID: 6034183095817855932}
-  Icon: {fileID: 2524839669364958588}
-  LevelBG: {fileID: 7514454634249355226}
-  Name: {fileID: 1916323944186471399}
-  Level: {fileID: 5255146338217337664}
-  hintPrefab: {fileID: 7794699695898021930, guid: b0d7409bda407e34ebe763451e354f80, type: 3}
+  _progress: {fileID: 6034183095817855932}
+  _icon: {fileID: 2524839669364958588}
+  _levelBG: {fileID: 7514454634249355226}
+  _name: {fileID: 1916323944186471399}
+  _level: {fileID: 5255146338217337664}
+  _hintPrefab: {fileID: 7794699695898021930, guid: b0d7409bda407e34ebe763451e354f80, type: 3}
 --- !u!1 &3447654608262773807
 GameObject:
   m_ObjectHideFlags: 0
