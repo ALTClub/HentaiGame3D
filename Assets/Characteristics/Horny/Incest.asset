@@ -15,7 +15,7 @@ MonoBehaviour:
   _name: "\u0418\u043D\u0446\u0435\u0441\u0442"
   _definition: "\u0421\u0435\u043A\u0441\u0443\u0430\u043B\u044C\u043D\u043E\u0435
     \u0432\u043B\u0435\u0447\u0435\u043D\u0438\u0435 \u043A \u0440\u043E\u0434\u0441\u0442\u0432\u0435\u043D\u043D\u0438\u043A\u0430\u043C"
-  icon: {fileID: 0}
+  _icon: {fileID: 21300000, guid: 1cb7ec78d32a69943b3c5ac0036045b6, type: 3}
   _levels:
   - name: "\u041D\u0435\u0432\u0435\u0434\u0435\u043D\u0438\u0435"
     valueToReach: 0
