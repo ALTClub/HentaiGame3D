@@ -280,11 +280,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d3559869234784bbad3f9f6193c214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsRealTime: 1
-  Clock: {fileID: 554256230}
-  Sun: {fileID: 352924141}
-  Moon: {fileID: 2082912534}
-  SunCurve:
+  _isRealTime: 1
+  _clock: {fileID: 554256230}
+  _sun: {fileID: 352924141}
+  _moon: {fileID: 2082912534}
+  _sunCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -306,7 +306,7 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.011423403
     - serializedVersion: 3
-      time: 0.8605174
+      time: 0.93491477
       value: 1
       inSlope: -0.00445387
       outSlope: -0.00445387
@@ -315,10 +315,10 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 1
     - serializedVersion: 3
-      time: 0.997654
+      time: 1.0720514
       value: 0.0007339581
-      inSlope: -3.6462193
-      outSlope: -3.6462193
+      inSlope: -3.6464517
+      outSlope: -3.6464517
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -335,7 +335,7 @@ MonoBehaviour:
     m_PreInfinity: 1
     m_PostInfinity: 1
     m_RotationOrder: 4
-  MoonCurve:
+  _moonCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -350,15 +350,15 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1.0657939
       value: 0.003761
-      inSlope: 6.3079658
-      outSlope: 6.3079658
+      inSlope: 11.057961
+      outSlope: 11.057961
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 1.1277239
-      value: 0.784933
+      time: 1.1108447
+      value: 1.0000052
       inSlope: 0.005309377
       outSlope: 0.005309377
       tangentMode: 0
@@ -366,8 +366,8 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.011423403
     - serializedVersion: 3
-      time: 1.9130625
-      value: 0.7849277
+      time: 1.8961833
+      value: 1
       inSlope: 0.0074903895
       outSlope: 0.0074903895
       tangentMode: 0
@@ -377,8 +377,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1.9947422
       value: -0.01112552
-      inSlope: -9.746035
-      outSlope: -9.746035
+      inSlope: -10.259099
+      outSlope: -10.259099
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -395,7 +395,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 27789128}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 194dbb2432e992043b930f921de02dc4, type: 3}
+  m_Script: {fileID: 11500000, guid: 7444d22a2017ba843b264c17b1d968f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &54147632
@@ -9322,7 +9322,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d416931257c7bce4cb3f0921cd31a771, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Settings: {fileID: 11400000, guid: c23cf2277e28a394e961741711937dc3, type: 2}
+  _settings: {fileID: 11400000, guid: c23cf2277e28a394e961741711937dc3, type: 2}
 --- !u!1001 &1378041144
 PrefabInstance:
   m_ObjectHideFlags: 0

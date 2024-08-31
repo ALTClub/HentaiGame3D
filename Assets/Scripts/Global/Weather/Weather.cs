@@ -5,50 +5,98 @@ using UnityEngine;
 
 public class Weather : MonoBehaviour
 {
-    [SerializeField] WeatherSettings Settings;
+    [SerializeField] WeatherSettings _settings;
     ParticleSystem rainParticle;
-    public static bool isRain { get; private set; }
+    static List<Rain> rains = new();
+    public static bool IsRain { get; private set; }
     private void Start()
     {
+        //load
+        string saveData = SaveManager.GetData(this);
+        if (saveData != null)
+        {
+            string[] stringRains = saveData.Split('\n');
+            foreach (string serialized in stringRains) rains.Add(new Rain(serialized));
+            foreach (Rain rain in rains)
+                if (rain.Started)
+                {
+                    StartCoroutine(rainCoroutine(true));
+                    break;
+                }
+        }
+
+        if (rains.Count == 0) rainSchedule();
         rainParticle = GetComponent<ParticleSystem>();
-        Schedule.OnNewMonth.AddListener(onNewMonth);
-        onNewMonth(); // Когда реализуем систему сохранений и смену сцен нужно будет переделать первый вызов
+
+        //events
+        TimeManager.OnNewMonth.AddListener(rainSchedule);
+        TimeManager.OnChangeTime.AddListener(CheckRain);
+        SaveManager.OnSave.AddListener(save);
+
     }
-    void onNewMonth()
+    void save()
     {
+        if (rains.Count <= 0) return;
+        List<string> saveData = new();
+        foreach (var rain in rains) saveData.Add(rain.Serialize());
+        SaveManager.Save(this, string.Join('\n', saveData.ToArray()));
+    }
+    void rainSchedule()
+    {
+        rains.Clear();
         DateTime current = TimeManager.GetDateTime;
         int daysInMonth = DateTime.DaysInMonth(current.Year, current.Month);
         List<int> rainDays = new();
-        while (rainDays.Count < Settings.RainPerMonth)
+        while (rainDays.Count < _settings.RainPerMonth)
         {
             DateTime rainDay;
             do
             {
-                rainDay = new(
-                    current.Year,
-                    current.Month,
-                    UnityEngine.Random.Range(0, daysInMonth + 1),
-                    UnityEngine.Random.Range(6, 22),
-                    UnityEngine.Random.Range(0, 60),
-                    UnityEngine.Random.Range(0, 60));
+                int day = UnityEngine.Random.Range(1, daysInMonth);
+                int hour = UnityEngine.Random.Range(6, 22);
+                int minute = UnityEngine.Random.Range(0, 60);
+                int second = UnityEngine.Random.Range(0, 60);
+                rainDay = new(current.Year, current.Month, day, hour, minute, second);
             }
             while (rainDays.Contains(rainDay.Day));
             rainDays.Add(rainDay.Day);
-            TimeSpan rainDuration = TimeSpan.FromMinutes(UnityEngine.Random.Range(Settings.MinRainDuration, Settings.MaxRainDuration));
-            Schedule.Task task = new("Rain", rainDay, rainDuration, new Action(startRain), new Action(stopRain));
-            Schedule.AddTask(task);
+            TimeSpan rainDuration = TimeSpan.FromMinutes(UnityEngine.Random.Range(_settings.MinRainDuration, _settings.MaxRainDuration));
+            Rain rain = new(rainDay, rainDuration);
+            rains.Add(rain);
         }
     }
-    void startRain() => StartCoroutine(rain(true));
-    void stopRain() => StartCoroutine(rain(false));
-    IEnumerator rain(bool enabled)
+    void CheckRain()
     {
+        List<Rain> completed = new();
+        foreach (var rain in rains)
+        {
+            TimeSpan diff = TimeManager.GetDateTime - rain.Date;
+            if (diff > TimeSpan.Zero)
+            {
+                if (diff > rain.Duration)
+                {
+                    if (rain.Started)
+                        StartCoroutine(rainCoroutine(false));
+                    completed.Add(rain);
+                }
+                else if (!rain.Started)
+                {
+                    StartCoroutine(rainCoroutine(true));
+                    rain.Started = true;
+                }
+            }
+        }
+        foreach (var rain in completed) rains.Remove(rain);
+    }
+    IEnumerator rainCoroutine(bool enabled)
+    {
+        print(enabled);
         ParticleSystem.MainModule main = rainParticle.main;
         Color color = main.startColor.color;
         if (enabled)
         {
             rainParticle.Play();
-            isRain = true;
+            IsRain = true;
         }
 
         float t = 0, progress = 0;
@@ -56,7 +104,7 @@ public class Weather : MonoBehaviour
         {
             progress = Mathf.Lerp(0f, 1f, t / 8f);
 
-            RenderSettings.skybox.Lerp(Settings.Skybox, Settings.RainSkybox, (enabled) ? progress : 1f - progress);
+            RenderSettings.skybox.Lerp(_settings.Skybox, _settings.RainSkybox, (enabled) ? progress : 1f - progress);
             DynamicGI.UpdateEnvironment();
 
             color.a = (enabled) ? progress : 1f - progress;
@@ -69,7 +117,7 @@ public class Weather : MonoBehaviour
         if (!enabled)
         {
             rainParticle.Stop();
-            isRain = false;
+            IsRain = false;
         }
     }
 }
