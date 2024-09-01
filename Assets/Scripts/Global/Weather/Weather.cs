@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Weather : MonoBehaviour
@@ -11,28 +12,25 @@ public class Weather : MonoBehaviour
     public static bool IsRain { get; private set; }
     private void Start()
     {
-        //load
-        string saveData = SaveManager.GetData(this);
-        if (saveData != null)
-        {
-            string[] stringRains = saveData.Split('\n');
-            foreach (string serialized in stringRains) rains.Add(new Rain(serialized));
-            foreach (Rain rain in rains)
-                if (rain.Started)
-                {
-                    StartCoroutine(rainCoroutine(true));
-                    break;
-                }
-        }
+        if (!load()) rainSchedule();
 
-        if (rains.Count == 0) rainSchedule();
         rainParticle = GetComponent<ParticleSystem>();
 
         //events
         TimeManager.OnNewMonth.AddListener(rainSchedule);
-        TimeManager.OnChangeTime.AddListener(CheckRain);
+        TimeManager.OnChangeTime.AddListener(checkRain);
         SaveManager.OnSave.AddListener(save);
+    }
+    private bool load()
+    {
+        string saveData = SaveManager.GetData(this);
+        if (saveData == default) return false;
 
+        rains.AddRange(saveData.Split('\n').Select(serialized => new Rain(serialized)));
+        if (rains.Any(rain => rain.Started))
+            StartCoroutine(rainCoroutine(true));
+
+        return true;
     }
     void save()
     {
@@ -45,45 +43,43 @@ public class Weather : MonoBehaviour
     {
         rains.Clear();
         DateTime current = TimeManager.GetDateTime;
-        int daysInMonth = DateTime.DaysInMonth(current.Year, current.Month);
-        List<int> rainDays = new();
-        while (rainDays.Count < _settings.RainPerMonth)
+        int daysInMonth = TimeManager.DaysInMonth();
+        while (rains.Count < _settings.RainPerMonth)
         {
             DateTime rainDay;
+
             do
             {
-                int day = UnityEngine.Random.Range(1, daysInMonth);
-                int hour = UnityEngine.Random.Range(6, 22);
+                int day = UnityEngine.Random.Range(1, daysInMonth + 1);
+                int hour = UnityEngine.Random.Range(_settings.EarliestTime, _settings.LatestTime);
                 int minute = UnityEngine.Random.Range(0, 60);
                 int second = UnityEngine.Random.Range(0, 60);
                 rainDay = new(current.Year, current.Month, day, hour, minute, second);
             }
-            while (rainDays.Contains(rainDay.Day));
-            rainDays.Add(rainDay.Day);
+            while (rains.Any(rain => rain.Date.Day == rainDay.Day));
             TimeSpan rainDuration = TimeSpan.FromMinutes(UnityEngine.Random.Range(_settings.MinRainDuration, _settings.MaxRainDuration));
+
             Rain rain = new(rainDay, rainDuration);
             rains.Add(rain);
         }
     }
-    void CheckRain()
+    void checkRain()
     {
         List<Rain> completed = new();
         foreach (var rain in rains)
         {
             TimeSpan diff = TimeManager.GetDateTime - rain.Date;
-            if (diff > TimeSpan.Zero)
+            if (diff <= TimeSpan.Zero) continue;
+            if (diff > rain.Duration)
             {
-                if (diff > rain.Duration)
-                {
-                    if (rain.Started)
-                        StartCoroutine(rainCoroutine(false));
-                    completed.Add(rain);
-                }
-                else if (!rain.Started)
-                {
-                    StartCoroutine(rainCoroutine(true));
-                    rain.Started = true;
-                }
+                if (rain.Started)
+                    StartCoroutine(rainCoroutine(false));
+                completed.Add(rain);
+            }
+            else if (!rain.Started)
+            {
+                StartCoroutine(rainCoroutine(true));
+                rain.Started = true;
             }
         }
         foreach (var rain in completed) rains.Remove(rain);

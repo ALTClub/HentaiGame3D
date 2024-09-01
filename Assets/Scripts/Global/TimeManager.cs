@@ -23,6 +23,7 @@ public class TimeManager : MonoBehaviour
         dateTime = dateTime.AddMinutes(minutes);
         OnChangeTime.Invoke();
     }
+    public static int DaysInMonth() => DateTime.DaysInMonth(dateTime.Year, dateTime.Month);
 
     void Start()
     {
