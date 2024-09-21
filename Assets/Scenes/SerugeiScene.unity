@@ -2155,8 +2155,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3eb161ee90b63b4e86982405fce7e39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prompt: 
-  outline: {fileID: 0}
+  _prompt: 
+  _outline: {fileID: 0}
   _item: {fileID: 0}
   _count: 1
 --- !u!4 &673713504
@@ -2314,7 +2314,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f5aa28c5e414a548b653474e8a90f50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactableTag: Interactable
 --- !u!114 &716373835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4801,8 +4800,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3eb161ee90b63b4e86982405fce7e39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prompt: 
-  outline: {fileID: 0}
+  _prompt: 
+  _outline: {fileID: 0}
   _item: {fileID: 0}
   _count: 1
 --- !u!4 &1390610798
@@ -4849,8 +4848,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3eb161ee90b63b4e86982405fce7e39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prompt: 
-  outline: {fileID: 0}
+  _prompt: 
+  _outline: {fileID: 0}
   _item: {fileID: 0}
   _count: 1
 --- !u!4 &1399005844
@@ -5393,7 +5392,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1614023810}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.10770606, y: -0.000000028703528, z: 0.0000000031096334, w: 0.9941828}
+  m_LocalRotation: {x: 0.10770606, y: -0.000000028703525, z: 0.000000003109633, w: 0.9941828}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5753,9 +5752,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79b2d923c9f9f5847bb8ed93ea643015, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  promptsPoint: {fileID: 1743193397}
-  promptPrefab: {fileID: 2350644699054098470, guid: f1e44a57dfe6f3749849f48fbee0fbc7, type: 3}
-  spacing: 150
+  _promptsPoint: {fileID: 1743193397}
+  _promptPrefab: {fileID: 2350644699054098470, guid: f1e44a57dfe6f3749849f48fbee0fbc7, type: 3}
+  _spacing: 100
 --- !u!1001 &1789438093
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6493,8 +6492,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1af09168c3e03034b8e6eaf5ecc4cff9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prompt: "\u0413\u043E\u0432\u043E\u0440\u0438\u0442\u044C"
-  outline: {fileID: 1346783021}
+  _prompt: "\u0413\u043E\u0432\u043E\u0440\u0438\u0442\u044C"
+  _outline: {fileID: 0}
   dialog:
     _options:
     - _name: "\u041F\u0440\u0438\u0432\u0435\u0442"
@@ -6649,8 +6648,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3eb161ee90b63b4e86982405fce7e39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prompt: 
-  outline: {fileID: 0}
+  _prompt: 
+  _outline: {fileID: 0}
   _item: {fileID: 0}
   _count: 1
 --- !u!4 &1969439919
@@ -6900,9 +6899,29 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 581311557815454350, guid: 5a7c474b294110a4ca561c53ab733669, type: 3}
+      propertyPath: _door
+      value: 
+      objectReference: {fileID: 1039015223}
+    - target: {fileID: 581311557815454350, guid: 5a7c474b294110a4ca561c53ab733669, type: 3}
+      propertyPath: _prompt
+      value: "\u041E\u0442\u043A\u0440\u044B\u0442\u044C"
+      objectReference: {fileID: 0}
+    - target: {fileID: 581311557815454350, guid: 5a7c474b294110a4ca561c53ab733669, type: 3}
       propertyPath: outline
       value: 
       objectReference: {fileID: 2049011090}
+    - target: {fileID: 581311557815454350, guid: 5a7c474b294110a4ca561c53ab733669, type: 3}
+      propertyPath: _outline
+      value: 
+      objectReference: {fileID: 2049011090}
+    - target: {fileID: 581311557815454350, guid: 5a7c474b294110a4ca561c53ab733669, type: 3}
+      propertyPath: _rotateAngle
+      value: -130
+      objectReference: {fileID: 0}
+    - target: {fileID: 581311557815454350, guid: 5a7c474b294110a4ca561c53ab733669, type: 3}
+      propertyPath: _rotateSpeed
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5794523703617397194, guid: 5a7c474b294110a4ca561c53ab733669, type: 3}
       propertyPath: m_Name
       value: Door (3)
@@ -7011,7 +7030,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &2049011089
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}

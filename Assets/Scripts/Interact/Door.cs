@@ -3,18 +3,18 @@ using UnityEngine;
 
 public class Door : Interactable
 {
-    [SerializeField] bool isOpen = false;
-    [SerializeField] float rotateAngle;
+    [SerializeField] bool _isOpen = false;
+    [SerializeField] float _rotateAngle;
 
-    [SerializeField] float rotateSpeed;
-    [SerializeField] GameObject door;
+    [SerializeField] float _rotateSpeed;
+    [SerializeField] GameObject _door;
 
     Coroutine rotator;
     Quaternion rotation;
 
     private void Start()
     {
-        rotation = door.transform.localRotation;
+        rotation = _door.transform.localRotation;
     }
 
     public override void Interact()
@@ -26,18 +26,18 @@ public class Door : Interactable
     {
         if (rotator != null) StopCoroutine(rotator);
         rotator = StartCoroutine(toggleDoor());
-        isOpen = !isOpen;
-        prompt = (isOpen) ? "Закрыть" : "Открыть";
+        _isOpen = !_isOpen;
+        _prompt = (_isOpen) ? "Закрыть" : "Открыть";
     }
 
     IEnumerator toggleDoor()
     {
         float t = 0;
-        Quaternion targetRotation = (!isOpen) ? Quaternion.Euler(0, 0, rotateAngle) : rotation;
-        while (door.transform.localRotation != targetRotation)
+        Quaternion targetRotation = (!_isOpen) ? Quaternion.Euler(0, 0, _rotateAngle) : rotation;
+        while (_door.transform.localRotation != targetRotation)
         {
             t += Time.fixedDeltaTime;
-            door.transform.localRotation = Quaternion.Lerp(door.transform.localRotation, targetRotation, t / rotateSpeed);
+            _door.transform.localRotation = Quaternion.Lerp(_door.transform.localRotation, targetRotation, t / _rotateSpeed);
             yield return new WaitForFixedUpdate();
         }
     }
@@ -46,7 +46,7 @@ public class Door : Interactable
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Vector3 startDirection = transform.right * door.transform.localScale.x;
-        Gizmos.DrawRay(door.transform.position, Quaternion.Euler(0, rotateAngle, 0) * startDirection);
+        Vector3 startDirection = transform.right * _door.transform.localScale.x;
+        Gizmos.DrawRay(_door.transform.position, Quaternion.Euler(0, _rotateAngle, 0) * startDirection);
     }
 }

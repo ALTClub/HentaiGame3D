@@ -7,8 +7,6 @@ using UnityEngine.Events;
 
 public class PlayerInteractor : MonoBehaviour
 {
-    [SerializeField] string interactableTag;
-
     private List<Interactable> interactables = new List<Interactable>();
     public static UnityEvent<List<Interactable>> OnInteractUpdate = new UnityEvent<List<Interactable>>();
     public static UnityEvent<int> OnSellectInteraction = new UnityEvent<int>();

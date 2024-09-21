@@ -5,13 +5,13 @@ using UnityEngine;
 
 public abstract class Interactable : MonoBehaviour
 {
-    [SerializeField] protected string prompt;
-    [SerializeField] protected Outlinable outline;
+    [SerializeField] protected string _prompt;
+    [SerializeField] protected Outlinable _outline;
     public abstract void Interact();
     public virtual void OnSelect(bool enabled)
     {
-        if (outline != null)
-            outline.enabled = enabled;
+        if (_outline != null)
+            _outline.enabled = enabled;
     }
-    public string GetPrompt { get { return prompt; } }
+    public string GetPrompt { get { return _prompt; } }
 }
