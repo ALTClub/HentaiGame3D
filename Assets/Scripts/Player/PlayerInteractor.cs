@@ -20,6 +20,7 @@ public class PlayerInteractor : MonoBehaviour
         InputManager.Input.Player.Interact.performed += ctx => interact();
         InputManager.Input.Player.Sellect.performed += ctx => select((int)ctx.ReadValue<float>());
         OnInteractUpdate.AddListener(ctx => currentInteract = 0);
+        OnInteractUpdate.AddListener(ctx => updateInteractables());
     }
 
     void select(int axis)
@@ -28,6 +29,7 @@ public class PlayerInteractor : MonoBehaviour
         if (currentInteract + axis >= interactables.Count || currentInteract + axis < 0) return;
         currentInteract += axis;
         OnSellectInteraction?.Invoke(currentInteract);
+        updateInteractables();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -43,6 +45,7 @@ public class PlayerInteractor : MonoBehaviour
     {
         if (other.TryGetComponent<Interactable>(out Interactable interact))
         {
+            interact.OnSelect(false);
             interactables.Remove(interact);
             OnInteractUpdate.Invoke(interactables);
         }
@@ -55,5 +58,12 @@ public class PlayerInteractor : MonoBehaviour
             interactables[currentInteract]?.Interact();
             OnInteractUpdate.Invoke(interactables);
         }
+    }
+    void updateInteractables()
+    {
+        if (interactables.Count == 0) return;
+        foreach (Interactable interactable in interactables)
+            interactable.OnSelect(false);
+        interactables[currentInteract].OnSelect(true);
     }
 }
