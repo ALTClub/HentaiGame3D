@@ -3,50 +3,60 @@ using UnityEngine;
 
 public class Door : Interactable
 {
-    [SerializeField] bool isOpen = false;
-    [SerializeField] float rotateAngle;
+    [SerializeField] bool _isOpen = false;
+    [SerializeField] float _openedAngle, _closedAngel;
 
-    [SerializeField] float rotateSpeed;
-    [SerializeField] GameObject door;
-
+    [SerializeField] float _rotateSpeed;
+    [SerializeField] GameObject _door;
+    public bool IsPlayerCollision = false;
     Coroutine rotator;
-    Quaternion rotation;
-
-    private void Start()
-    {
-        rotation = door.transform.localRotation;
-    }
 
     public override void Interact()
     {
         toggle();
     }
-
     void toggle()
     {
         if (rotator != null) StopCoroutine(rotator);
         rotator = StartCoroutine(toggleDoor());
-        isOpen = !isOpen;
-        prompt = (isOpen) ? "Закрыть" : "Открыть";
+        _isOpen = !_isOpen;
+        prompt = (_isOpen) ? "Закрыть" : "Открыть";
     }
 
     IEnumerator toggleDoor()
     {
         float t = 0;
-        Quaternion targetRotation = (!isOpen) ? Quaternion.Euler(0, 0, rotateAngle) : rotation;
-        while (door.transform.localRotation != targetRotation)
+        Quaternion targetRotation = Quaternion.Euler(0, 0, (!_isOpen) ? _openedAngle : _closedAngel);
+        while (_door.transform.localRotation != targetRotation)
         {
-            t += Time.fixedDeltaTime;
-            door.transform.localRotation = Quaternion.Lerp(door.transform.localRotation, targetRotation, t / rotateSpeed);
+            if (!IsPlayerCollision || !_isOpen)
+            {
+                t += Time.fixedDeltaTime;
+                _door.transform.localRotation = Quaternion.Lerp(_door.transform.localRotation, targetRotation, t / _rotateSpeed);
+            }
             yield return new WaitForFixedUpdate();
         }
     }
-    public void StopRotation() { if (rotator != null) StopCoroutine(rotator); }
 
     private void OnDrawGizmos()
     {
+        Gizmos.color = Color.blue;
+        Vector3 startDirection = transform.right * _door.transform.localScale.x;
+        Gizmos.DrawRay(_door.transform.position, Quaternion.Euler(0, _openedAngle, 0) * startDirection);
         Gizmos.color = Color.red;
-        Vector3 startDirection = transform.right * door.transform.localScale.x;
-        Gizmos.DrawRay(door.transform.position, Quaternion.Euler(0, rotateAngle, 0) * startDirection);
+        Gizmos.DrawRay(_door.transform.position, Quaternion.Euler(0, _closedAngel, 0) * startDirection);
+    }
+    protected override void onSave()
+    {
+        SaveManager.Save(this, _isOpen.ToString());
+    }
+    protected override void onLoad()
+    {
+        string saveData = SaveManager.GetData(this);
+        if (saveData == null) return;
+        _isOpen = bool.Parse(saveData);
+        prompt = (_isOpen) ? "Закрыть" : "Открыть";
+        Quaternion targetRotation = Quaternion.Euler(0, 0, (!_isOpen) ? _openedAngle : _closedAngel);
+        _door.transform.localRotation = targetRotation;
     }
 }
