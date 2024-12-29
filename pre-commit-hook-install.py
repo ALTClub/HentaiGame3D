@@ -1,3 +1,5 @@
+#!/bin/python
+
 import os, stat, glob, re
 
 HOOKS='.git/hooks'

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InputManager : MonoBehaviour
 {
@@ -10,10 +11,7 @@ public class InputManager : MonoBehaviour
         EnableControls();
     }
 
-    private void OnDisable()
-    {
-        DisableControls();
-    }
+    private void OnDisable() => DisableControls();
     public static void DisableControls() => Input.Disable();
     public static void EnableControls() => Input.Player.Enable();
 }

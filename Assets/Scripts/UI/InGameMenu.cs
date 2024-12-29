@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InGameMenu : MonoBehaviour
 {
@@ -10,13 +11,15 @@ public class InGameMenu : MonoBehaviour
     bool _somethingOpened = false;
     private void Start()
     {
-        InputManager.Input.Player.EscMenu.performed += ctx => OnEsc();
-        InputManager.Input.Player.Characteristics.performed += ctx =>
-        {
-            ToggleWindow(_characteristicsMenu);
-            updateCharacteristics();
-        };
+        InputManager.Input.Player.EscMenu.performed += OnEsc;
+        InputManager.Input.Player.Characteristics.performed += toggleCharacteristics;
     }
+    private void OnDisable()
+    {
+        InputManager.Input.Player.EscMenu.performed -= OnEsc;
+        InputManager.Input.Player.Characteristics.performed -= toggleCharacteristics;
+    }
+    public void ResetButton() => SaveManager.ClearData();
     //windows
     void CloseAll()
     {
@@ -36,15 +39,16 @@ public class InGameMenu : MonoBehaviour
         if (Window != _escMenu) _header.SetActive(Window.activeSelf);
         if (Window.activeSelf) _somethingOpened = true;
     }
-    void OnEsc()
+    void OnEsc(InputAction.CallbackContext ctx)
     {
         if (_somethingOpened || _escMenu.activeSelf) CloseAll();
         else ToggleWindow(_escMenu);
     }
 
     //characteristics
-    void updateCharacteristics()
+    void toggleCharacteristics(InputAction.CallbackContext ctx)
     {
+        ToggleWindow(_characteristicsMenu);
         Cursor.lockState = CursorLockMode.None;
         foreach (Transform UIGroup in _characteristicsMenu.transform)
             if (UIGroup.name != "Buttons")
