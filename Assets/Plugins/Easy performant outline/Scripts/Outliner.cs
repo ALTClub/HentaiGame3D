@@ -392,8 +392,8 @@ namespace EPOOutline
 
         private void UpdateBuffer(Camera targetCamera, CommandBuffer buffer, bool removeOnly)
         {
-            targetCamera.RemoveCommandBuffer(CameraEvent.BeforeImageEffects, buffer);
-            targetCamera.RemoveCommandBuffer(CameraEvent.AfterForwardOpaque, buffer);
+            //targetCamera.RemoveCommandBuffer(CameraEvent.BeforeImageEffects, buffer);
+            //targetCamera.RemoveCommandBuffer(CameraEvent.AfterForwardOpaque, buffer);
             if (removeOnly)
                 return;
 
@@ -402,7 +402,7 @@ namespace EPOOutline
 
         private void OnPreRender()
         {
-            if (GraphicsSettings.renderPipelineAsset != null)
+            if (GraphicsSettings.defaultRenderPipeline != null)
                 return;
 
             parameters.OutlinablesToRender.Clear();

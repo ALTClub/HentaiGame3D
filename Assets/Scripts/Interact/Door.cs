@@ -20,7 +20,7 @@ public class Door : Interactable
         if (rotator != null) StopCoroutine(rotator);
         rotator = StartCoroutine(toggleDoor());
         _isOpen = !_isOpen;
-        prompt = (_isOpen) ? "Закрыть" : "Открыть";
+        _prompt = (_isOpen) ? "Закрыть" : "Открыть";
     }
 
     IEnumerator toggleDoor()
@@ -55,7 +55,7 @@ public class Door : Interactable
         string saveData = SaveManager.GetData(this);
         if (saveData == null) return;
         _isOpen = bool.Parse(saveData);
-        prompt = (_isOpen) ? "Закрыть" : "Открыть";
+        _prompt = (_isOpen) ? "Закрыть" : "Открыть";
         Quaternion targetRotation = Quaternion.Euler(0, 0, (_isOpen) ? _openedAngle : _closedAngel);
         _door.transform.localRotation = targetRotation;
     }
