@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class InteractUI : MonoBehaviour
 {
-    [SerializeField] Transform promptsPoint;
-    [SerializeField] GameObject promptPrefab;
-    [SerializeField] float spacing;
+    [SerializeField] Transform _promptsPoint;
+    [SerializeField] GameObject _promptPrefab;
+    [SerializeField] float _spacing;
 
-    private List<GameObject> promptList = new List<GameObject>();
+    List<GameObject> promptList = new List<GameObject>();
 
     void Start()
     {
@@ -27,11 +27,11 @@ public class InteractUI : MonoBehaviour
 
         foreach (var interactable in interactables)
         {
-            GameObject prompt = Instantiate(this.promptPrefab, promptsPoint.position, Quaternion.identity);
+            GameObject prompt = Instantiate(this._promptPrefab, _promptsPoint.position, Quaternion.identity);
 
             promptList.Add(prompt);
 
-            prompt.transform.SetParent(promptsPoint);
+            prompt.transform.SetParent(_promptsPoint);
             prompt.GetComponent<PromptUI>().SetText(interactable.GetPrompt);
         }
 
@@ -55,12 +55,12 @@ public class InteractUI : MonoBehaviour
 
         for (int i = 0; i < promptList.Count; i++)
         {
-            Vector3 pos = promptsPoint.position;
-            pos.y += spacing * i;
+            Vector3 pos = _promptsPoint.position;
+            pos.y += _spacing * i;
             promptList[i].transform.position = pos;
         }
 
-        float center = (promptList[promptList.Count - 1].transform.position.y - promptsPoint.position.y) / 2;
+        float center = (promptList[promptList.Count - 1].transform.position.y - _promptsPoint.position.y) / 2;
 
         foreach (var item in promptList)
         {

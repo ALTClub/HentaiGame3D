@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+using UnityEngine.Events;
 
 [CreateAssetMenu(menuName = "Characteistic")]
 public class Characteristic : ScriptableObject
 {
+    public static UnityEvent<Characteristic> OnNewLevel = new();
     [SerializeField] string _name, _definition;
     [SerializeField] Sprite _icon;
 
@@ -39,7 +40,11 @@ public class Characteristic : ScriptableObject
     void checkNewLevel()
     {
         if (_currentLevel + 1 == _levels.Count()) return;
-        if (_levels[_currentLevel + 1].valueToReach <= _experience) _currentLevel++;
+        if (_levels[_currentLevel + 1].valueToReach <= _experience)
+        {
+            _currentLevel++;
+            OnNewLevel.Invoke(this);
+        }
         else return;
         checkNewLevel();
     }
