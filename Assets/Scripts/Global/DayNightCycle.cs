@@ -10,13 +10,14 @@ public class DayNightCycle : MonoBehaviour
     [SerializeField] Light _sun, _moon;
     [SerializeField] AnimationCurve _sunCurve, _moonCurve;
 
-    float sunIntensivity, moonIntensivity;
+    float _sunIntensivity, _moonIntensivity;
     private void Start()
     {
-        sunIntensivity = _sun.intensity;
-        moonIntensivity = _moon.intensity;
+        _sunIntensivity = _sun.intensity;
+        _moonIntensivity = _moon.intensity;
         TimeManager.OnChangeTime.AddListener(setSunMoonRotation);
         TimeManager.OnChangeTime.AddListener(updateClock);
+        updateClock();
     }
     void updateClock() => _clock.text = TimeManager.GetDateTime.TimeOfDay.ToString("hh':'mm");
     void setSunMoonRotation()
@@ -28,8 +29,8 @@ public class DayNightCycle : MonoBehaviour
         _sun.transform.localRotation = Quaternion.Euler(percentOfDay / 2 * 360f, 180f, 0);
         _moon.transform.localRotation = Quaternion.Euler(percentOfDay / 2 * 360f + 180f, 180f, 0);
 
-        _sun.intensity = sunIntensivity * _sunCurve.Evaluate(percentOfDay);
-        _moon.intensity = moonIntensivity * _moonCurve.Evaluate(percentOfDay);
+        _sun.intensity = _sunIntensivity * _sunCurve.Evaluate(percentOfDay);
+        _moon.intensity = _moonIntensivity * _moonCurve.Evaluate(percentOfDay);
     }
     private void Update()
     {

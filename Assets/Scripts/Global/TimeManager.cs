@@ -25,12 +25,12 @@ public class TimeManager : MonoBehaviour
     }
     public static int DaysInMonth() => DateTime.DaysInMonth(dateTime.Year, dateTime.Month);
 
-    void Start()
+    void Awake()
     {
         //load
         string saveData = SaveManager.GetData(this);
         if (saveData != null)
-            dateTime = DateTime.ParseExact(saveData, "MM/dd/yy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            dateTime = DateTime.Parse(saveData);
         mounth = dateTime.Month;
 
         //events
@@ -40,7 +40,7 @@ public class TimeManager : MonoBehaviour
 
     public void save()
     {
-        string data = dateTime.ToString("MM/dd/yy HH:mm:ss");
+        string data = dateTime.ToString("dd/MM/yyyy HH:mm:ss");
         SaveManager.Save(this, data);
     }
 }

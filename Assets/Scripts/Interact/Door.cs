@@ -56,7 +56,7 @@ public class Door : Interactable
         if (saveData == null) return;
         _isOpen = bool.Parse(saveData);
         prompt = (_isOpen) ? "Закрыть" : "Открыть";
-        Quaternion targetRotation = Quaternion.Euler(0, 0, (!_isOpen) ? _openedAngle : _closedAngel);
+        Quaternion targetRotation = Quaternion.Euler(0, 0, (_isOpen) ? _openedAngle : _closedAngel);
         _door.transform.localRotation = targetRotation;
     }
 }

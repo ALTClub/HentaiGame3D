@@ -19,7 +19,7 @@ public class Rain
     public Rain(string serialized)
     {
         string[] splited = serialized.Split(',');
-        Date = DateTime.ParseExact(splited[0], "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+        Date = DateTime.Parse(splited[0]);
         Duration = TimeSpan.FromMinutes(int.Parse(splited[1]));
         Started = bool.Parse(splited[2]);
     }

@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
@@ -26,13 +28,21 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
 
-        InputManager.Input.Player.Movement.performed += ctx => OnMove();
-        InputManager.Input.Player.Movement.canceled += ctx => OnMove();
-        InputManager.Input.Player.Jump.performed += ctx => jump();
-        InputManager.Input.Player.Jump.canceled += ctx => cancelJump();
+        InputManager.Input.Player.Movement.performed += OnMove;
+        InputManager.Input.Player.Movement.canceled += OnMove;
+        InputManager.Input.Player.Jump.performed += jump;
+        InputManager.Input.Player.Jump.canceled += cancelJump;
     }
 
-    void OnMove()
+    private void OnDisable()
+    {
+        InputManager.Input.Player.Movement.performed -= OnMove;
+        InputManager.Input.Player.Movement.canceled -= OnMove;
+        InputManager.Input.Player.Jump.performed -= jump;
+        InputManager.Input.Player.Jump.canceled -= cancelJump;
+    }
+
+    void OnMove(InputAction.CallbackContext ctx)
     {
         anim.SetBool("IsMoving", InputManager.Input.Player.Movement.IsPressed());
     }
@@ -68,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void jump()
+    void jump(InputAction.CallbackContext ctx)
     {
         if (anim.GetBool("IsGrounded"))
         {
@@ -76,8 +86,8 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void cancelJump()
+    void cancelJump(InputAction.CallbackContext ctx)
     {
-        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
     }
 }

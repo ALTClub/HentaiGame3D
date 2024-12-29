@@ -10,11 +10,12 @@ public class Weather : MonoBehaviour
     ParticleSystem rainParticle;
     static List<Rain> rains = new();
     public static bool IsRain { get; private set; }
+    Coroutine rain;
     private void Start()
     {
-        if (!load()) rainSchedule();
-
         rainParticle = GetComponent<ParticleSystem>();
+
+        if (!load()) rainSchedule();
 
         //events
         TimeManager.OnNewMonth.AddListener(rainSchedule);
@@ -28,7 +29,7 @@ public class Weather : MonoBehaviour
 
         rains.AddRange(saveData.Split('\n').Select(serialized => new Rain(serialized)));
         if (rains.Any(rain => rain.Started))
-            StartCoroutine(rainCoroutine(true));
+            rain = StartCoroutine(rainCoroutine(true));
 
         return true;
     }
@@ -73,12 +74,12 @@ public class Weather : MonoBehaviour
             if (diff > rain.Duration)
             {
                 if (rain.Started)
-                    StartCoroutine(rainCoroutine(false));
+                    this.rain = StartCoroutine(rainCoroutine(false));
                 completed.Add(rain);
             }
             else if (!rain.Started)
             {
-                StartCoroutine(rainCoroutine(true));
+                this.rain = StartCoroutine(rainCoroutine(true));
                 rain.Started = true;
             }
         }
