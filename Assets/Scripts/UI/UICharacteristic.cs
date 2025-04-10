@@ -10,14 +10,15 @@ public class UICharacteristic : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [SerializeField] Image _progress, _icon, _levelBG;
     [SerializeField] TMP_Text _name, _level;
     [SerializeField] GameObject _hintPrefab;
+    [SerializeField] PlayerCharacteristics _playerCharacteristics;
     Level _currentLevel;
     string _difinition;
     GameObject _spawnedHint;
     Transform _parent;
-    public void SetCharacteristic(Characteristic characteristic, Transform parent)
+    void setCharacteristic(Characteristic characteristic)
     {
         if (characteristic == null) return;
-        this._parent = parent;
+        _parent = transform.parent;
         _icon.sprite = characteristic.Icon;
         _name.text = characteristic.Name;
         _levelBG.color = characteristic.Level.color;
@@ -25,6 +26,10 @@ public class UICharacteristic : MonoBehaviour, IPointerEnterHandler, IPointerExi
         _difinition = characteristic.Definition;
         _currentLevel = characteristic.Level;
         _progress.fillAmount = characteristic.GetLevelProgress();
+    }
+    private void OnEnable()
+    {
+        setCharacteristic(_playerCharacteristics.GetCharacteristic(gameObject.name));
     }
     private void OnDisable()
     {

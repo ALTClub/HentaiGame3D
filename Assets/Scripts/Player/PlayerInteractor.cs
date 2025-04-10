@@ -11,6 +11,7 @@ public class PlayerInteractor : MonoBehaviour
     public static UnityEvent<List<Interactable>> OnInteractUpdate = new UnityEvent<List<Interactable>>();
     public static UnityEvent<int> OnSellectInteraction = new UnityEvent<int>();
 
+    bool hidden = false;
     int currentInteract = 0;
 
     void Start()
@@ -35,7 +36,8 @@ public class PlayerInteractor : MonoBehaviour
         if (other.TryGetComponent<Interactable>(out Interactable interact))
         {
             interactables.Add(interact);
-            OnInteractUpdate.Invoke(interactables);
+            if (!hidden)
+                OnInteractUpdate.Invoke(interactables);
         }
     }
 
@@ -45,16 +47,24 @@ public class PlayerInteractor : MonoBehaviour
         {
             interact.OnSelect(false);
             interactables.Remove(interact);
-            OnInteractUpdate.Invoke(interactables);
+            if (!hidden)
+                OnInteractUpdate.Invoke(interactables);
         }
+    }
+
+    public void ToggleInteracting(bool enabled)
+    {
+        OnInteractUpdate.Invoke(enabled ? interactables : null);
+        hidden = !enabled;
     }
 
     void interact()
     {
-        if (interactables.Count > currentInteract)
+        if (interactables.Count > currentInteract && !hidden)
         {
             interactables[currentInteract]?.Interact();
-            OnInteractUpdate.Invoke(interactables);
+            if (!hidden)
+                OnInteractUpdate.Invoke(interactables);
         }
     }
     void updateInteractables()

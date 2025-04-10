@@ -14,7 +14,7 @@ public class Collectable : Interactable
     }
     public override void Interact()
     {
-        _playerInventory.AddItem(_item, _count);
+        _playerInventory.UpdateCountBy(_item, _count);
         Destroy(gameObject);
     }
 }

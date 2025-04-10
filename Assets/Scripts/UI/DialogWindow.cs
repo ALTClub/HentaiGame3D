@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class DialogWindow : MonoBehaviour
@@ -24,17 +25,14 @@ public class DialogWindow : MonoBehaviour
     [SerializeField] float _spacing;
     List<GameObject> _optionList = new();
 
-    public static UnityEvent<Dialog> PlayDialog = new();
-    public static UnityEvent<String, UnityEvent> Read = new();
-    public static UnityEvent<List<Option>> SpawnOptions = new();
-    public static UnityEvent Stop = new();
-
-    void OnEnable()
+    public static UnityEvent<Phrase> Read = new();
+    public static UnityEvent StopReading = new();
+    public static UnityEvent<bool> ToggleDialog = new();
+    private void OnEnable()
     {
-        PlayDialog.AddListener(Play);
-        Read.AddListener(Reader);
-        SpawnOptions.AddListener(spawnOptions);
-        Stop.AddListener(Close);
+        Read.AddListener(reader);
+        StopReading.AddListener(stop);
+        ToggleDialog.AddListener(toggle);
     }
     void OnDisable()
     {
@@ -43,34 +41,35 @@ public class DialogWindow : MonoBehaviour
         _window.SetActive(false);
     }
     // base
-    public void Play(Dialog dialog)
+    void toggle(bool enabled)
     {
-        _cam.enabled = false;
+        _text.text = "";
+        _window.SetActive(enabled);
 
         InputManager.DisableControls();
-        InputManager.Input.Dialogs.Enable();
-        InputManager.Input.Dialogs.Skip.performed += ctx => Dialog.OnSkip.Invoke();
-
-        Cursor.lockState = CursorLockMode.None;
-        dialog.Open();
-        _window.SetActive(true);
+        if (enabled) InputManager.Input.Dialogs.Enable();
+        else InputManager.EnableControls();
     }
-    public void Close()
-    {
-        InputManager.DisableControls();
-        InputManager.EnableControls();
-        Cursor.lockState = CursorLockMode.Locked;
-        _window.SetActive(false);
-        _cam.enabled = true;
-    }
+    //reading
     public static Coroutine reading { get; private set; }
-    void Reader(string text, UnityEvent OnReaded)
+    void stop()
     {
-        if (reading != null) StopCoroutine(reading);
-        if (text != "") reading = StartCoroutine(reader(text, OnReaded));
-        else OnReaded.Invoke();
+        if (reading != null)
+        {
+            StopCoroutine(reading);
+            reading = null;
+        }
     }
-    IEnumerator reader(string text, UnityEvent OnReaded)
+    void reader(Phrase phrase)
+    {
+        toggle(true);
+
+        phrase.Open(_name, _text);
+        InputManager.Input.Dialogs.Skip.performed += phrase.Skip;
+        stop();
+        reading = StartCoroutine(spelling(phrase.Text, phrase.OnReaded));
+    }
+    IEnumerator spelling(string text, UnityEvent<int> OnReaded)
     {
         _text.text = "";
         foreach (char sym in text)
@@ -93,50 +92,34 @@ public class DialogWindow : MonoBehaviour
             }
         }
         reading = null;
-        OnReaded.Invoke();
+        OnReaded.Invoke(0);
     }
     // options
     void closeOptions()
     {
         foreach (GameObject option in _optionList) Destroy(option.gameObject);
         _optionList.Clear();
+        InputManager.EnableControls();
+        Cursor.lockState = CursorLockMode.Locked;
+        _cam.enabled = true;
     }
-    void spawnOptions(List<Option> options)
+    public void SpawnOptions(Option[] options)
     {
+        _cam.enabled = false;
+        InputManager.DisableControls();
+        Cursor.lockState = CursorLockMode.None;
         foreach (var option in options)
         {
-            option.Open(_name, _text);
-            GameObject Option = Instantiate(_optionPrefab, transform.position, Quaternion.identity);
-            _optionList.Add(Option);
+            GameObject Option = Instantiate(_optionPrefab, _optionPose);
             Option.GetComponentInChildren<TMP_Text>().text = option.Name;
 
             Button button = Option.GetComponent<Button>();
+            button.interactable = option.Aviable;
             button.name = option.Name;
-            button.interactable = option.CheckConditions();
 
             button.onClick.AddListener(closeOptions);
             button.onClick.AddListener(option.Click);
-
-            Option.transform.SetParent(_window.transform);
-            center();
-        }
-    }
-    void center()
-    {
-        if (_optionList.Count == 0) return;
-
-        for (int i = 0; i < _optionList.Count; i++)
-        {
-            Vector3 pos = _optionPose.position;
-            pos.y += _spacing * i;
-            _optionList[i].transform.position = pos;
-        }
-
-        float center = (_optionList[_optionList.Count - 1].transform.position.y - _optionPose.position.y) / 2;
-
-        foreach (var item in _optionList)
-        {
-            item.transform.Translate(0, -center, 0);
+            _optionList.Add(Option);
         }
     }
 }
