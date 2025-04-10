@@ -6,7 +6,6 @@ public class InteractUI : MonoBehaviour
 {
     [SerializeField] Transform _promptsPoint;
     [SerializeField] GameObject _promptPrefab;
-    [SerializeField] float _spacing;
 
     List<GameObject> promptList = new List<GameObject>();
 
@@ -25,17 +24,13 @@ public class InteractUI : MonoBehaviour
 
         promptList.Clear();
 
+        if (interactables == null) return;
         foreach (var interactable in interactables)
         {
-            GameObject prompt = Instantiate(this._promptPrefab, _promptsPoint.position, Quaternion.identity);
-
+            GameObject prompt = Instantiate(_promptPrefab, _promptsPoint);
             promptList.Add(prompt);
-
-            prompt.transform.SetParent(_promptsPoint);
             prompt.GetComponent<PromptUI>().SetText(interactable.GetPrompt);
         }
-
-        center();
         selectInteraction(0);
     }
 
@@ -46,25 +41,6 @@ public class InteractUI : MonoBehaviour
         {
             prompt.GetComponent<PromptUI>().Select(i == id);
             i++;
-        }
-    }
-
-    void center()
-    {
-        if (promptList.Count == 0) return;
-
-        for (int i = 0; i < promptList.Count; i++)
-        {
-            Vector3 pos = _promptsPoint.position;
-            pos.y += _spacing * i;
-            promptList[i].transform.position = pos;
-        }
-
-        float center = (promptList[promptList.Count - 1].transform.position.y - _promptsPoint.position.y) / 2;
-
-        foreach (var item in promptList)
-        {
-            item.transform.Translate(0, -center, 0);
         }
     }
 }

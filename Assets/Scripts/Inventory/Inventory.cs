@@ -16,20 +16,31 @@ public class Inventory : MonoBehaviour
             _count = count;
         }
     }
-    public static UnityEvent<Item> OnAddItem = new();
+    public static UnityEvent<Item, object> OnAddItem = new();
     List<Slot> _inventory = new();
-    public void AddItem(Item item, int count = 1)
+    public void ChangeItem(Item item, int count = 1)
     {
         foreach (Slot slot in _inventory)
             if (slot._item == item)
             {
+                if (slot._count + count < 0)
+                {
+                    Debug.Log("not enaugh");
+                    return;
+                }
                 slot._count += count;
-                return;
+                break;
             }
         _inventory.Add(new Slot(item, count));
-        OnAddItem.Invoke(item);
+        string action = (count < 0) ? "Удалён" : "Добавлен";
+        Debug.Log($"{action} предмет: {item} {Mathf.Abs(count)}");
+        OnAddItem.Invoke(item, this);
     }
-    Item _selected;
-    public void SelectItem(Item item) => _selected = item;
-    public void AddSelectedItem(int count) => AddItem(_selected, count);
+    public int GetItemCount(Item item)
+    {
+        foreach (Slot slot in _inventory)
+            if (slot._item == item)
+                return slot._count;
+        return 0;
+    }
 }

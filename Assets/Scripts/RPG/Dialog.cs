@@ -4,123 +4,64 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
-[Serializable]
-public struct Option
+public class Option
 {
-    [SerializeField] string _name;
-    [SerializeField] bool _isAndConditions;
-    [SerializeField] Condition.Characteristic[] _characteristicConditions;
-    [SerializeField] UnityEvent _onClick;
-    [SerializeField] Monolog _continuation;
-
-    TMP_Text _nameField;
-    TMP_Text _dialogField;
+    [SerializeField] UnityEvent<int> _onClick;
+    bool _aviable = false;
+    string _name;
     public string Name => _name;
-
-    public bool CheckConditions()
+    public bool Aviable => _aviable;
+    public Option(string name, bool aviable, UnityEvent<int> onClick)
     {
-        Condition[] conditions = _characteristicConditions;
-        if (conditions.Length == 0) return true;
-        if (_isAndConditions)
-        {
-            foreach (Condition condition in conditions)
-                if (!condition.Сheck()) return false;
-            return true;
-        }
-        else
-        {
-            foreach (Condition condition in conditions)
-                if (condition.Сheck()) return true;
-            return false;
-        }
+        _name = name;
+        _aviable = aviable;
+        _onClick = onClick;
     }
     public void Click()
     {
-        _onClick?.Invoke();
-        _continuation.Open(_dialogField, _nameField);
-    }
-
-    public void Open(TMP_Text nameField, TMP_Text dialogField)
-    {
-        _nameField = nameField;
-        _dialogField = dialogField;
+        _onClick?.Invoke(0);
     }
 }
 
-
-[Serializable]
-public struct Phrase
+public class Phrase
 {
-    [SerializeField][TextArea(3, 15)] string _text;
-    [SerializeField] AudioClip _voiceActing;
-    [SerializeField] UnityEvent _onReaded;
-
+    public UnityEvent<int> OnReaded;
+    UnityEvent<int> onNext;
     TMP_Text _dialogField;
-    Delegate _next;
+    string _name;
+    string _text;
+    bool _canSkip;
+    public string Text => _text;
+    public bool CanSkip => _canSkip;
+    public Phrase(UnityEvent<int> onReaded, UnityEvent<int> onNext, string name, string text, bool canSkip)
+    {
+        OnReaded = onReaded;
+        this.onNext = onNext;
+        _name = name;
+        _text = text;
+        _canSkip = canSkip;
+    }
 
-    public void Skip()
+    public void Skip(InputAction.CallbackContext ctx)
     {
         if (DialogWindow.reading != null)
         {
+            DialogWindow.StopReading.Invoke();
             _dialogField.text = _text;
-            DialogWindow.Read.Invoke("", _onReaded);
+            OnReaded?.Invoke(0);
         }
         else
         {
-            Dialog.OnSkip.RemoveListener(Skip);
-            _next.DynamicInvoke();
+            DialogWindow.ToggleDialog.Invoke(false);
+            InputManager.Input.Dialogs.Skip.performed -= Skip;
+            onNext?.Invoke(0);
         }
     }
-    public void Open(AudioSource source, TMP_Text dialogField, Delegate next)
+    public void Open(TMP_Text nameField, TMP_Text dialogField)
     {
-        _next = next;
-        _dialogField = dialogField;
-        if (_voiceActing != null) source.PlayOneShot(_voiceActing);
-        Dialog.OnSkip.AddListener(Skip);
-        DialogWindow.Read.Invoke(_text, _onReaded);
-    }
-}
-
-[Serializable]
-public struct Monolog
-{
-    [SerializeField] string _name;
-    [SerializeField] Phrase[] _phrases;
-    [SerializeField] AudioSource _source;
-    [SerializeField] List<Option> _options;
-
-    TMP_Text _dialogField;
-    int _currentPhrase;
-    public void NextPhrase()
-    {
-        if (_currentPhrase + 1 == _phrases.Length) return;
-        _currentPhrase++;
-        _phrases[_currentPhrase].Open(_source, _dialogField, new Action(NextPhrase));
-        if (_currentPhrase + 1 == _phrases.Length)
-        {
-            if (_options.Count > 0) DialogWindow.SpawnOptions.Invoke(_options);
-            else DialogWindow.Stop.Invoke();
-        }
-    }
-    public void Open(TMP_Text dialogField, TMP_Text nameField)
-    {
-        _currentPhrase = -1;
-        _dialogField = dialogField;
         nameField.text = _name;
-        NextPhrase();
-    }
-}
-
-
-[Serializable]
-public class Dialog
-{
-    [SerializeField] private List<Option> _options;
-    public static UnityEvent OnSkip = new();
-
-    public void Open()
-    {
-        DialogWindow.SpawnOptions.Invoke(_options);
+        _dialogField = dialogField;
     }
 }

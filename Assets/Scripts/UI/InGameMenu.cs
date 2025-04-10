@@ -24,16 +24,19 @@ public class InGameMenu : MonoBehaviour
     void CloseAll()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        Time.timeScale = 1;
+
         _escMenu.SetActive(false);
         _characteristicsMenu.SetActive(false);
         _header.SetActive(false);
-        Time.timeScale = 1;
+
         _somethingOpened = false;
     }
     void ToggleWindow(GameObject Window)
     {
-        if (_escMenu.activeSelf) return;
         CloseAll();
+        Cursor.lockState = CursorLockMode.None;
+
         Window.SetActive(!Window.activeSelf);
         Time.timeScale = (Window.activeSelf) ? 0 : 1;
         if (Window != _escMenu) _header.SetActive(Window.activeSelf);
@@ -41,21 +44,14 @@ public class InGameMenu : MonoBehaviour
     }
     void OnEsc(InputAction.CallbackContext ctx)
     {
-        if (_somethingOpened || _escMenu.activeSelf) CloseAll();
+        if (_somethingOpened) CloseAll();
         else ToggleWindow(_escMenu);
     }
 
     //characteristics
     void toggleCharacteristics(InputAction.CallbackContext ctx)
     {
+        if (_escMenu.activeSelf) return;
         ToggleWindow(_characteristicsMenu);
-        Cursor.lockState = CursorLockMode.None;
-        foreach (Transform UIGroup in _characteristicsMenu.transform)
-            if (UIGroup.name != "Buttons")
-                foreach (Transform UICharacteristic in UIGroup)
-                    UICharacteristic.GetComponent<UICharacteristic>().
-                        SetCharacteristic(
-                        _playerCharacteristics.GetGroup(UIGroup.name)?.
-                        GetCharacteristic(UICharacteristic.name), transform);
     }
 }
