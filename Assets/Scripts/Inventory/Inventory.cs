@@ -21,7 +21,7 @@ public class Inventory : MonoBehaviour
     public void UpdateCountBy(Item item, int count = 1)
     {
         Slot slot = _inventory.Find(slot => slot._item == item);
-        if(slot == default) _inventory.Add(new Slot(item, count));
+        if (slot == default) _inventory.Add(new Slot(item, count));
         else
         {
             if (slot._count + count < 0)
