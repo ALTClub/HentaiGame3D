@@ -24,7 +24,7 @@ public class InteractUI : MonoBehaviour
 
         promptList.Clear();
 
-        if (interactables == null) return;
+        if (interactables == default) return;
         foreach (var interactable in interactables)
         {
             GameObject prompt = Instantiate(_promptPrefab, _promptsPoint);
