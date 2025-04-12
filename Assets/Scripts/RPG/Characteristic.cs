@@ -14,55 +14,35 @@ public class Characteristic : ScriptableObject
 
     [Header("Уровни владения")]
     [SerializeField] Level[] _levels;
-    int _currentLevel;
-    int _experience;
+    MyCharacteristics owner;
     public string Name => _name;
     public string Definition => _definition;
     public Sprite Icon => _icon;
-    public Level Level => _levels[_currentLevel];
-    private void Awake()
-    {
-        _currentLevel = 0;
-        _experience = 0;
-    }
+    public Level Level => _levels.LastOrDefault(level => level.valueToReach <= Experience);
     public int Experience
     {
-        get => _experience;
+        get => owner.Experience[name];
         set
         {
-            _experience = value;
-            checkNewLevel();
+            owner.Experience[name] = value;
         }
     }
-    /// <summary>
-    /// Проверка на возможность повышения уровня, в случае успеха повышает уровень до соответствующего опыту
-    /// </summary>
-    void checkNewLevel()
+    public void AddExperience(int value) => Experience += value;
+    public void Init(MyCharacteristics owner)
     {
-        if (_currentLevel + 1 == _levels.Count()) return;
-        if (_levels[_currentLevel + 1].valueToReach <= _experience)
-        {
-            _currentLevel++;
-            OnNewLevel.Invoke(this);
-        }
-        else return;
-        checkNewLevel();
+        this.owner = owner;
+        owner.Experience[name] = 0;
     }
     public float GetLevelProgress()
     {
-        float sum = _levels[_currentLevel + 1].valueToReach - _levels[_currentLevel].valueToReach;
-        float cur = _experience - _levels[_currentLevel].valueToReach;
+        float sum = _levels.FirstOrDefault(level => level.valueToReach > Experience).valueToReach - Level.valueToReach;
+        float cur = Experience - Level.valueToReach;
         return cur / sum;
     }
-    public bool CheckLevel(string level)
-    {
-        for (int i = 0; i <= _currentLevel; i++)
-        {
-            if (_levels[i].name == level)
-                return true;
-        }
-        return false;
-    }
+    public bool CheckLevel(string level) =>
+        _levels.ToList().Any(l => l.name == level && l.valueToReach <= Experience);
+    public bool CheckLevel(int level) =>
+        _levels[level].valueToReach <= Experience;
 }
 [Serializable]
 public struct Level

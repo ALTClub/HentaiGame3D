@@ -15,6 +15,15 @@ public class Collectable : Interactable
     public override void Interact()
     {
         _playerInventory.UpdateCountBy(_item, _count);
+        save();
         Destroy(gameObject);
+    }
+    protected override void onLoad()
+    {
+        if (SaveManager.GetData(this) == "collected") Destroy(gameObject);
+    }
+    void save()
+    {
+        SaveManager.Save(this, "collected");
     }
 }

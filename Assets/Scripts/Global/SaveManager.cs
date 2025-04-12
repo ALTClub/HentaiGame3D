@@ -5,14 +5,16 @@ using UnityEngine.SceneManagement;
 public static class SaveManager
 {
     public static UnityEvent OnSave = new();
-    public static void Save(object sender, string data)
+    public static void Save(object sender, string data, bool UseSceneID = true)
     {
-        PlayerPrefs.SetString(SceneManager.GetActiveScene().name + ": " + sender.ToString(), data);
+        string key = (UseSceneID ? SceneManager.GetActiveScene().name + ": " : "") + sender.ToString();
+        PlayerPrefs.SetString(key, data);
     }
-    public static string GetData(object sender)
+    public static string GetData(object sender, bool UseSceneID = true)
     {
-        if (PlayerPrefs.HasKey(SceneManager.GetActiveScene().name + ": " + sender.ToString()))
-            return PlayerPrefs.GetString(SceneManager.GetActiveScene().name + ": " + sender.ToString());
+        string key = (UseSceneID ? SceneManager.GetActiveScene().name + ": " : "") + sender.ToString();
+        if (PlayerPrefs.HasKey(key))
+            return PlayerPrefs.GetString(key);
         else return null;
     }
     public static void ClearData()

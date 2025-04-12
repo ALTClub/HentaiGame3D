@@ -7,7 +7,7 @@ public class InGameMenu : MonoBehaviour
 {
     [SerializeField] GameObject _escMenu, _header, _characteristicsMenu;
     [Header("Характеристики")]
-    [SerializeField] PlayerCharacteristics _playerCharacteristics;
+    [SerializeField] MyCharacteristics _playerCharacteristics;
     bool _somethingOpened = false;
     private void Start()
     {

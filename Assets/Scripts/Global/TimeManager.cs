@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -24,6 +25,18 @@ public class TimeManager : MonoBehaviour
         OnChangeTime.Invoke();
     }
     public static int DaysInMonth() => DateTime.DaysInMonth(dateTime.Year, dateTime.Month);
+    public static DateTime GetRandomDay(int[] daysBlackList, WeatherSettings _settings)
+    {
+        int newDay;
+        do newDay = UnityEngine.Random.Range(1, DaysInMonth() + 1);
+        while (daysBlackList.Contains(newDay));
+
+        int hour = UnityEngine.Random.Range(_settings.EarliestTime, _settings.LatestTime);
+        int minute = UnityEngine.Random.Range(0, 60);
+        int second = UnityEngine.Random.Range(0, 60);
+
+        return new(GetDateTime.Year, GetDateTime.Month, newDay, hour, minute, second);
+    }
 
     void Awake()
     {

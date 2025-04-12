@@ -10,7 +10,7 @@ public class UICharacteristic : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [SerializeField] Image _progress, _icon, _levelBG;
     [SerializeField] TMP_Text _name, _level;
     [SerializeField] GameObject _hintPrefab;
-    [SerializeField] PlayerCharacteristics _playerCharacteristics;
+    [SerializeField] MyCharacteristics _playerCharacteristics;
     Level _currentLevel;
     string _difinition;
     GameObject _spawnedHint;
