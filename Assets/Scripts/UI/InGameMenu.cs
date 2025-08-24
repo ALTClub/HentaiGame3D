@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class InGameMenu : MonoBehaviour
 {
@@ -54,4 +55,6 @@ public class InGameMenu : MonoBehaviour
         if (_escMenu.activeSelf) return;
         ToggleWindow(_characteristicsMenu);
     }
+    public void QuickSave() => SaveManager.Save(false);
+    public void MainMenu() => SceneManager.LoadSceneAsync(0);
 }

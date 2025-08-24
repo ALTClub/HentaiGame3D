@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -18,7 +17,7 @@ public class Inventory : MonoBehaviour
             _count = count;
         }
     }
-    public static UnityEvent<Item, object> OnAddItem = new();
+    public static UnityEvent<Item, int, object> OnAddItem = new();
     List<Slot> _inventory = new();
     private void Start()
     {
@@ -41,9 +40,7 @@ public class Inventory : MonoBehaviour
             return;
         }
 
-        string action = (count < 0) ? "Удалён" : "Добавлен";
-        Debug.Log($"{action} предмет: {item} {Mathf.Abs(count)}");
-        OnAddItem.Invoke(item, this);
+        OnAddItem.Invoke(item, count, this);
     }
     public int GetItemCount(Item item)
     {
@@ -53,11 +50,11 @@ public class Inventory : MonoBehaviour
     void save()
     {
         string data = string.Join('\n', _inventory.Select(slot => $"{slot._item.name}={slot._count}"));
-        SaveManager.Save(this, data, !Global);
+        SaveManager.UpdateSaveData(this, data, !Global);
     }
     void load()
     {
-        string data = SaveManager.GetData(this, !Global);
+        string data = SaveManager.GetSaveData(this, !Global);
         if (data == default) return;
         var slots = data.Split('\n').Select(slot => slot.Split('='));
         foreach (var slot in slots)

@@ -7,6 +7,8 @@ public class TimeManager : MonoBehaviour
 {
     static DateTime dateTime = new(2023, 9, 1, 8, 0, 0);
     public static DateTime GetDateTime => dateTime;
+    public static DateTime TodayInTime(TimeSpan target) =>
+        new(dateTime.Year, dateTime.Month, dateTime.Day, target.Hours, target.Minutes, target.Seconds);
 
     public static UnityEvent OnChangeTime = new();
     public static UnityEvent OnNewMonth = new();
@@ -24,6 +26,7 @@ public class TimeManager : MonoBehaviour
         dateTime = dateTime.AddMinutes(minutes);
         OnChangeTime.Invoke();
     }
+    public static bool IsWeekend => dateTime.DayOfWeek == DayOfWeek.Saturday || dateTime.DayOfWeek == DayOfWeek.Sunday;
     public static int DaysInMonth() => DateTime.DaysInMonth(dateTime.Year, dateTime.Month);
     public static DateTime GetRandomDay(int[] daysBlackList, WeatherSettings _settings)
     {
@@ -41,7 +44,7 @@ public class TimeManager : MonoBehaviour
     void Awake()
     {
         //load
-        string saveData = SaveManager.GetData(this);
+        string saveData = SaveManager.GetSaveData(this, false);
         if (saveData != null)
             dateTime = DateTime.Parse(saveData);
         mounth = dateTime.Month;
@@ -54,6 +57,6 @@ public class TimeManager : MonoBehaviour
     public void save()
     {
         string data = dateTime.ToString("dd/MM/yyyy HH:mm:ss");
-        SaveManager.Save(this, data);
+        SaveManager.UpdateSaveData(this, data, false);
     }
 }
