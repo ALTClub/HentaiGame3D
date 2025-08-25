@@ -8,12 +8,12 @@ using UnityEngine.Events;
 [CreateAssetMenu(menuName = "Characteistic")]
 public class Characteristic : ScriptableObject
 {
-    public static UnityEvent<Characteristic> OnNewLevel = new();
     [SerializeField] string _name, _definition;
     [SerializeField] Sprite _icon;
 
     [Header("Уровни владения")]
     [SerializeField] Level[] _levels;
+    public static UnityEvent<Characteristic, int> OnGetExp = new();
     MyCharacteristics owner;
     public string Name => _name;
     public string Definition => _definition;
@@ -27,7 +27,11 @@ public class Characteristic : ScriptableObject
             owner.Experience[name] = value;
         }
     }
-    public void AddExperience(int value) => Experience += value;
+    public void AddExperience(int value)
+    {
+        Experience += value;
+        if (owner.CompareTag("Player")) OnGetExp.Invoke(this, value);
+    }
     public void Init(MyCharacteristics owner)
     {
         this.owner = owner;

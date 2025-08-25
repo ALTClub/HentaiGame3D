@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class MyCharacteristics : MonoBehaviour
 {
@@ -17,11 +18,11 @@ public class MyCharacteristics : MonoBehaviour
     private void save()
     {
         string result = string.Join('\n', Experience);
-        SaveManager.Save(this, result, false);
+        SaveManager.UpdateSaveData(this, result, false);
     }
     private void load()
     {
-        string data = SaveManager.GetData(this, false);
+        string data = SaveManager.GetSaveData(this, false);
         if (data == default) return;
         Experience = data.Split('\n').
             Select(pair => pair.Trim(new char[] { '[', ']' }).Split(',')).
