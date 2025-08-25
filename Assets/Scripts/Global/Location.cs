@@ -1,11 +1,10 @@
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Location : MonoBehaviour
 {
     public string Name;
-    
+
     void Start()
     {
         SaveManager.OnSave.AddListener(save);

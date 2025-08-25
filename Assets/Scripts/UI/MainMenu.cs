@@ -26,13 +26,13 @@ public class MainMenu : MonoBehaviour
         foreach (Transform t in parrent)
             Destroy(t.gameObject);
         if (!checkSaves()) return;
-        foreach(var path in Directory.GetFiles(SaveManager.root))
+        foreach (var path in Directory.GetFiles(SaveManager.root))
         {
             if (path.Substring(path.Length - 4) != "json") continue;
             string json = File.ReadAllText(path);
             try
             {
-                Dictionary<string,string> data = JsonUtility.FromJson<Serialization<string, string>>(json).ToDictionary();
+                Dictionary<string, string> data = JsonUtility.FromJson<Serialization<string, string>>(json).ToDictionary();
                 Instantiate(_savePrefab, parrent).GetComponent<UISave>().Init(data, path);
             }
             catch { }

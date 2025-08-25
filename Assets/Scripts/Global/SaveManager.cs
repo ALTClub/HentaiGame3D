@@ -18,7 +18,7 @@ public static class SaveManager
     public static string GetSaveData(object sender, bool UseSceneID = true)
     {
         string key = (UseSceneID ? SceneManager.GetActiveScene().name + ": " : "") + sender.ToString();
-        if(saveData.ContainsKey(key))
+        if (saveData.ContainsKey(key))
             return saveData[key];
         else return null;
     }
@@ -36,7 +36,7 @@ public static class SaveManager
             Directory.CreateDirectory(root);
         File.WriteAllText(root + $"Save{DateTime.Now:dd-MM-yyyy-HH-mm}.json", json);
     }
-    public static void Load(Dictionary<string,string> data)
+    public static void Load(Dictionary<string, string> data)
     {
         saveData = data;
         SceneManager.LoadSceneAsync(saveData["SceneName"]);

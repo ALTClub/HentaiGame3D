@@ -9,7 +9,7 @@ public class UISave : MonoBehaviour
     [SerializeField] GameObject _autosaveIndicator;
     Dictionary<string, string> data;
     string path;
-    public void Init(Dictionary<string,string> saveData, string path)
+    public void Init(Dictionary<string, string> saveData, string path)
     {
         data = saveData;
         this.path = path;

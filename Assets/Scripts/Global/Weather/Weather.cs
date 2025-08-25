@@ -8,7 +8,7 @@ public class Weather : MonoBehaviour
 {
     [SerializeField] WeatherSettings _settings;
     ParticleSystem rainParticle;
-    static List<Rain> rains = new();
+    static List<Event> rains = new();
     public static bool IsRain { get; private set; }
     Coroutine rain;
     private void Start()
@@ -24,10 +24,10 @@ public class Weather : MonoBehaviour
     }
     private bool load()
     {
-        string saveData = SaveManager.GetData(this, false);
+        string saveData = SaveManager.GetSaveData(this, false);
         if (saveData == default) return false;
 
-        rains.AddRange(saveData.Split('\n').Select(serialized => new Rain(serialized)));
+        rains.AddRange(saveData.Split('\n').Select(serialized => new Event(serialized)));
         if (rains.Any(rain => rain.Started))
             rain = StartCoroutine(rainCoroutine(true));
 
@@ -38,26 +38,26 @@ public class Weather : MonoBehaviour
         if (rains.Count <= 0) return;
         List<string> saveData = new();
         foreach (var rain in rains) saveData.Add(rain.Serialize());
-        SaveManager.Save(this, string.Join('\n', saveData.ToArray()), false);
+        SaveManager.UpdateSaveData(this, string.Join('\n', saveData.ToArray()), false);
     }
     void rainSchedule()
     {
         rains.Clear();
         while (rains.Count < _settings.RainPerMonth)
         {
-            DateTime rainDay = TimeManager.GetRandomDay(rains.Select(rain => rain.Date.Day).ToArray(), _settings);
+            DateTime rainDay = TimeManager.GetRandomDay(rains.Select(rain => rain.StartDate.Day).ToArray(), _settings);
             TimeSpan rainDuration = TimeSpan.FromMinutes(UnityEngine.Random.Range(_settings.MinRainDuration, _settings.MaxRainDuration));
 
-            Rain rain = new(rainDay, rainDuration);
+            Event rain = new(rainDay, rainDuration);
             rains.Add(rain);
         }
     }
     void checkRain()
     {
-        List<Rain> completed = new();
+        List<Event> completed = new();
         foreach (var rain in rains)
         {
-            TimeSpan diff = TimeManager.GetDateTime - rain.Date;
+            TimeSpan diff = TimeManager.GetDateTime - rain.StartDate;
             if (diff <= TimeSpan.Zero) continue;
             if (diff > rain.Duration)
             {
