@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MyCharacteristics : MonoBehaviour
 {
-    [SerializeField] protected List<ExpCharacteristic> _characteristics;
+    [SerializeField] List<ExpCharacteristic> _characteristics;
     public ExpCharacteristic GetCharacteristic(string name) =>
         _characteristics.Find(c => c.Characteristic.name == name);
     Serialization<string, string> saveData => new(_characteristics.ToDictionary(c => c.Characteristic.name, c => c.Experience.ToString()));

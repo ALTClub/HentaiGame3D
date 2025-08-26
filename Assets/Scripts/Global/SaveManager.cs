@@ -43,18 +43,13 @@ public static class SaveManager
         SceneManager.LoadSceneAsync(saveData["SceneName"]);
         Time.timeScale = 1;
     }
-    public static void RefreshSaves(Transform parrent, GameObject _savePrefab)
+    public static Dictionary<string, Dictionary<string, string>> GetSaves()
     {
-        foreach (Transform t in parrent)
-            GameObject.Destroy(t.gameObject);
-        if (!CheckSaves()) return;
-        var paths = Directory.GetFiles(root).Where(path => path.Substring(path.Length - 4) != "json");
-        foreach (var path in paths)
-        {
-            var json = File.ReadAllText(path);
-            var save = JsonUtility.FromJson<Serialization<string, string>>(json).ToDictionary();
-            GameObject.Instantiate(_savePrefab, parrent).GetComponent<UISave>().Init(save, path);
-        }
+        if (!CheckSaves()) return null;
+        var paths = Directory.GetFiles(root).Where(path => path.Substring(path.Length - 4) == "json");
+        return paths.ToDictionary(path => path, path =>
+        JsonUtility.FromJson<Serialization<string, string>>(File.ReadAllText(path)).ToDictionary());
+
     }
     public static bool CheckSaves() =>
         Directory.Exists(root) && Directory.GetFiles(root).Count() > 0;

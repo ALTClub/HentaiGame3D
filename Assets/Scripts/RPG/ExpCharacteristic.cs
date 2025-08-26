@@ -14,15 +14,15 @@ public class ExpCharacteristic
     public void DeserializeExp(string value)
     {
         Experience = int.Parse(value);
-        oldLavel = current;
+        oldLevel = current;
     }
-    public Level Level => oldLavel == default ? _characteristic.Levels[0] : oldLavel;
-    Level oldLavel;
+    public Level Level => oldLevel == default ? _characteristic.Levels[0] : oldLevel;
+    Level oldLevel;
     public void AddExperience(int value) => Experience += value;
     public bool CheckNewLevel()
     {
         bool isNew = Level.name != current.name;
-        if (isNew) oldLavel = current;
+        if (isNew) oldLevel = current;
         return isNew;
     }
     public float GetLevelProgress =>

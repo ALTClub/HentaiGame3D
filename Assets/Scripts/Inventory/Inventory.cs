@@ -9,12 +9,12 @@ public class Inventory : MonoBehaviour
     // разделить на группы
     public class Slot
     {
-        public Item _item;
-        public int _count = 0;
+        public Item Item;
+        public int Count = 0;
         public Slot(Item item, int count)
         {
-            _item = item;
-            _count = count;
+            Item = item;
+            Count = count;
         }
     }
     public static UnityEvent<Item, int, object> OnAddItem = new();
@@ -26,12 +26,12 @@ public class Inventory : MonoBehaviour
     }
     public void UpdateCountBy(Item item, int count = 1)
     {
-        Slot slot = _inventory.Find(slot => slot._item == item);
+        Slot slot = _inventory.Find(slot => slot.Item == item);
 
-        if (slot != default && slot._count + count >= 0)
+        if (slot != default && slot.Count + count >= 0)
         {
-            slot._count += count;
-            if (slot._count == 0) _inventory.Remove(slot);
+            slot.Count += count;
+            if (slot.Count == 0) _inventory.Remove(slot);
         }
         else if (count > 0) _inventory.Add(new Slot(item, count));
         else
@@ -44,20 +44,20 @@ public class Inventory : MonoBehaviour
     }
     public int GetItemCount(Item item)
     {
-        var slot = _inventory.Find(slot => slot._item == item);
-        return slot == default ? 0 : slot._count;
+        var slot = _inventory.Find(slot => slot.Item == item);
+        return slot == default ? 0 : slot.Count;
     }
     void save()
     {
-        string data = string.Join('\n', _inventory.Select(slot => $"{slot._item.name}={slot._count}"));
-        SaveManager.UpdateSaveData(this, data, !Global);
+        Serialization<string, string> data = new(_inventory.ToDictionary(slot => slot.Item.name, slot => slot.Count.ToString()));
+        SaveManager.UpdateSaveData(this, JsonUtility.ToJson(data), !Global);
     }
     void load()
     {
-        string data = SaveManager.GetSaveData(this, !Global);
-        if (data == default) return;
-        var slots = data.Split('\n').Select(slot => slot.Split('='));
-        foreach (var slot in slots)
-            _inventory.Add(new Slot(Resources.Load<Item>($"Items/{slot[0]}"), int.Parse(slot[1])));
+        string json = SaveManager.GetSaveData(this, !Global);
+        if (json == default) return;
+        var dict = JsonUtility.FromJson<Serialization<string, string>>(json).ToDictionary();
+        foreach (var slot in dict)
+            _inventory.Add(new Slot(Resources.Load<Item>($"Items/{slot.Key}"), int.Parse(slot.Value)));
     }
 }

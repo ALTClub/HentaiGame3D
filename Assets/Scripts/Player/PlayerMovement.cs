@@ -38,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
 
     void OnMove(InputAction.CallbackContext ctx)
     {
-        anim.SetBool("IsMoving", InputManager.Input.Player.Movement.IsPressed());
+        anim.SetBool("IsMoving", !ctx.canceled);
     }
     private void FixedUpdate()
     {
@@ -61,7 +61,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void jump(InputAction.CallbackContext ctx)
     {
-        if (InputManager.Input.Player.Jump.IsPressed())
+        if (!ctx.canceled)
         {
             if (charController.isGrounded)
                 isJumping = true;
