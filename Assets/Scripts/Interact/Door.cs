@@ -48,11 +48,11 @@ public class Door : Interactable
     }
     protected override void onSave()
     {
-        SaveManager.Save(this, _isOpen.ToString());
+        SaveManager.UpdateSaveData(this, _isOpen.ToString());
     }
     protected override void onLoad()
     {
-        string saveData = SaveManager.GetData(this);
+        string saveData = SaveManager.GetSaveData(this);
         if (saveData == null) return;
         _isOpen = bool.Parse(saveData);
         _prompt = (_isOpen) ? "Закрыть" : "Открыть";

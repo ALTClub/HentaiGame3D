@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,27 +7,28 @@ public class Notification : MonoBehaviour
 {
     [SerializeField] Image _icon;
     [SerializeField] TMP_Text _message;
+    [SerializeField] float _duration = 1f;
     Animator anim;
     private void Start()
     {
         anim = GetComponent<Animator>();
         string message;
-        Inventory.OnAddItem.AddListener(itemNotification);
-        Characteristic.OnNewLevel.AddListener(characteristic =>
+        Inventory.OnAddItem.AddListener((item, count, sender) =>
         {
-            message = "Новый уровень!\n"
-            + characteristic.name + '\n'
-            + characteristic.Level.name;
-            StartCoroutine(open(characteristic.Icon, message, characteristic.Level.color, 1.5f));
+            string action = (count < 0) ? "Отдан" : "Добавлен";
+            message = $"{action} предмет!\n{item.Name} {Mathf.Abs(count)}";
+            StartCoroutine(open(item.Icon, message, item.Rarity, _duration));
         });
-    }
-    void itemNotification(Item item, object sender)
-    {
-        Debug.Log(sender);
-        StartCoroutine(open(item.Icon, $"Получен предмет!\n{item.name}", item.Rarity, 1f));
+        ExpCharacteristic.OnGetExp.AddListener((expChar, value, isNewLevel) =>
+        {
+            message = $"{expChar.Characteristic.Name} \n" +
+            (isNewLevel ? $"New level: {expChar.Level.name}\n" : "" + $"+{value} exp");
+            StartCoroutine(open(expChar.Characteristic.Icon, message, expChar.Level.color, _duration));
+        });
     }
     IEnumerator open(Sprite icon, string message, Color color, float duration)
     {
+        Debug.Log(message);
         _icon.sprite = icon;
         _message.text = message;
         anim.SetTrigger("Open");

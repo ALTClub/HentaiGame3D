@@ -1,71 +1,20 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 
 [CreateAssetMenu(menuName = "Characteistic")]
 public class Characteristic : ScriptableObject
 {
-    public static UnityEvent<Characteristic> OnNewLevel = new();
     [SerializeField] string _name, _definition;
     [SerializeField] Sprite _icon;
-
     [Header("Уровни владения")]
     [SerializeField] Level[] _levels;
-    int _currentLevel;
-    int _experience;
     public string Name => _name;
     public string Definition => _definition;
     public Sprite Icon => _icon;
-    public Level Level => _levels[_currentLevel];
-    private void Awake()
-    {
-        _currentLevel = 0;
-        _experience = 0;
-    }
-    public int Experience
-    {
-        get => _experience;
-        set
-        {
-            _experience = value;
-            checkNewLevel();
-        }
-    }
-    /// <summary>
-    /// Проверка на возможность повышения уровня, в случае успеха повышает уровень до соответствующего опыту
-    /// </summary>
-    void checkNewLevel()
-    {
-        if (_currentLevel + 1 == _levels.Count()) return;
-        if (_levels[_currentLevel + 1].valueToReach <= _experience)
-        {
-            _currentLevel++;
-            OnNewLevel.Invoke(this);
-        }
-        else return;
-        checkNewLevel();
-    }
-    public float GetLevelProgress()
-    {
-        float sum = _levels[_currentLevel + 1].valueToReach - _levels[_currentLevel].valueToReach;
-        float cur = _experience - _levels[_currentLevel].valueToReach;
-        return cur / sum;
-    }
-    public bool CheckLevel(string level)
-    {
-        for (int i = 0; i <= _currentLevel; i++)
-        {
-            if (_levels[i].name == level)
-                return true;
-        }
-        return false;
-    }
+    public Level[] Levels => _levels;
 }
 [Serializable]
-public struct Level
+public class Level
 {
     public string name;
     /// <summary>

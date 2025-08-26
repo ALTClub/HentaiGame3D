@@ -4,14 +4,38 @@ using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
+    Camera cam;
     void Start()
     {
+        cam = GetComponent<Camera>();
         Cursor.lockState = CursorLockMode.Locked;
     }
-    public void Rotate(float rotationSpeed, Transform player)
+    public Vector3 Rotate(Vector3 direction, Transform player)
     {
-        Quaternion rotation = transform.rotation;
-        rotation.x = player.rotation.x; rotation.z = player.rotation.z;
-        player.rotation = Quaternion.Lerp(player.rotation, rotation, rotationSpeed * Time.fixedDeltaTime);
+        // --- Character rotation --- 
+        Vector3 forward = cam.transform.forward;
+        Vector3 right = cam.transform.right;
+
+        forward.y = 0;
+        right.y = 0;
+
+        forward.Normalize();
+        right.Normalize();
+
+        // Relate the front with the Z direction (depth) and right with X (lateral movement)
+        forward = forward * direction.z;
+        right = right * direction.x;
+
+        if (direction.x != 0 || direction.z != 0)
+        {
+            float angle = Mathf.Atan2(forward.x + right.x, forward.z + right.z) * Mathf.Rad2Deg;
+            Quaternion rotation = Quaternion.Euler(0, angle, 0);
+            player.rotation = Quaternion.Slerp(player.rotation, rotation, 0.15f);
+        }
+
+        // --- End rotation ---
+        Vector3 verticalDirection = Vector3.up * direction.y;
+        Vector3 horizontalDirection = forward + right;
+        return verticalDirection + horizontalDirection;
     }
 }

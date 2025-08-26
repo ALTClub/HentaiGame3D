@@ -1,37 +1,31 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] Transform model;
-    [SerializeField] CameraScript cam;
-
-    [SerializeField] float rotationSpeed;
-
+    [SerializeField] CameraScript cameraScript;
     [SerializeField]
-    private float Speed, JumpForce;
+    float Speed, JumpForce, JumpTime = 0.85f;
 
-    [Range(1, 10)]
-    [SerializeField]
-    private float CancelJumpForce;
-
-    private Rigidbody rb;
-    private Animator anim;
+    CharacterController charController;
+    Animator anim;
+    float gravity = 6f, jumpElapsedTime = 0;
+    bool isJumping;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        charController = GetComponent<CharacterController>();
         anim = GetComponent<Animator>();
 
         InputManager.Input.Player.Movement.performed += OnMove;
         InputManager.Input.Player.Movement.canceled += OnMove;
         InputManager.Input.Player.Jump.performed += jump;
-        InputManager.Input.Player.Jump.canceled += cancelJump;
+        InputManager.Input.Player.Jump.canceled += jump;
     }
 
     private void OnDisable()
@@ -39,55 +33,39 @@ public class PlayerMovement : MonoBehaviour
         InputManager.Input.Player.Movement.performed -= OnMove;
         InputManager.Input.Player.Movement.canceled -= OnMove;
         InputManager.Input.Player.Jump.performed -= jump;
-        InputManager.Input.Player.Jump.canceled -= cancelJump;
+        InputManager.Input.Player.Jump.canceled -= jump;
     }
 
     void OnMove(InputAction.CallbackContext ctx)
     {
-        anim.SetBool("IsMoving", InputManager.Input.Player.Movement.IsPressed());
+        anim.SetBool("IsMoving", !ctx.canceled);
     }
-
     private void FixedUpdate()
     {
         Vector3 direction = InputManager.Input.Player.Movement.ReadValue<Vector2>();
-        direction = new Vector3(direction.x, 0, direction.y);
+        direction = new Vector3(direction.x, 0, direction.y) * (Speed) * Time.fixedDeltaTime;
 
-        rb.AddRelativeForce(direction * Speed * Time.fixedDeltaTime, ForceMode.Impulse);
-
-        if (!InputManager.Input.Player.Movement.IsPressed()) return;
-
-        cam.Rotate(rotationSpeed, transform); //поворачиваем игрока в центр камеры
-
-        //поворачиваем модельку в сторону движения
-        model.localRotation = Quaternion.Slerp(model.localRotation, Quaternion.LookRotation(direction), rotationSpeed * Time.fixedDeltaTime);
-    }
-
-    private void OnCollisionEnter(UnityEngine.Collision collision)
-    {
-        if (collision.collider.CompareTag("Ground"))
+        if (isJumping)
         {
-            anim.SetBool("IsGrounded", true);
+            direction.y = Mathf.SmoothStep(JumpForce, JumpForce * 0.30f, jumpElapsedTime / JumpTime) * Time.fixedDeltaTime;
+            jumpElapsedTime += Time.fixedDeltaTime;
+            if (jumpElapsedTime >= JumpTime)
+            {
+                isJumping = false;
+                jumpElapsedTime = 0;
+            }
         }
-    }
+        direction.y = direction.y - gravity * Time.fixedDeltaTime;
 
-    private void OnCollisionExit(UnityEngine.Collision collision)
-    {
-        if (collision.collider.CompareTag("Ground"))
-        {
-            anim.SetBool("IsGrounded", false);
-        }
+        charController.Move(cameraScript.Rotate(direction, transform));
     }
-
     void jump(InputAction.CallbackContext ctx)
     {
-        if (anim.GetBool("IsGrounded"))
+        if (!ctx.canceled)
         {
-            rb.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
+            if (charController.isGrounded)
+                isJumping = true;
         }
-    }
-
-    void cancelJump(InputAction.CallbackContext ctx)
-    {
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+        else if (isJumping) jumpElapsedTime = Mathf.Lerp(jumpElapsedTime, JumpTime, 0.25f);
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -6,6 +7,8 @@ public class TimeManager : MonoBehaviour
 {
     static DateTime dateTime = new(2023, 9, 1, 8, 0, 0);
     public static DateTime GetDateTime => dateTime;
+    public static DateTime TodayInTime(TimeSpan target) =>
+        new(dateTime.Year, dateTime.Month, dateTime.Day, target.Hours, target.Minutes, target.Seconds);
 
     public static UnityEvent OnChangeTime = new();
     public static UnityEvent OnNewMonth = new();
@@ -23,12 +26,25 @@ public class TimeManager : MonoBehaviour
         dateTime = dateTime.AddMinutes(minutes);
         OnChangeTime.Invoke();
     }
+    public static bool IsWeekend => dateTime.DayOfWeek == DayOfWeek.Saturday || dateTime.DayOfWeek == DayOfWeek.Sunday;
     public static int DaysInMonth() => DateTime.DaysInMonth(dateTime.Year, dateTime.Month);
+    public static DateTime GetRandomDay(int[] daysBlackList, WeatherSettings _settings)
+    {
+        int newDay;
+        do newDay = UnityEngine.Random.Range(1, DaysInMonth() + 1);
+        while (daysBlackList.Contains(newDay));
+
+        int hour = UnityEngine.Random.Range(_settings.EarliestTime, _settings.LatestTime);
+        int minute = UnityEngine.Random.Range(0, 60);
+        int second = UnityEngine.Random.Range(0, 60);
+
+        return new(GetDateTime.Year, GetDateTime.Month, newDay, hour, minute, second);
+    }
 
     void Awake()
     {
         //load
-        string saveData = SaveManager.GetData(this);
+        string saveData = SaveManager.GetSaveData(this, false);
         if (saveData != null)
             dateTime = DateTime.Parse(saveData);
         mounth = dateTime.Month;
@@ -41,6 +57,6 @@ public class TimeManager : MonoBehaviour
     public void save()
     {
         string data = dateTime.ToString("dd/MM/yyyy HH:mm:ss");
-        SaveManager.Save(this, data);
+        SaveManager.UpdateSaveData(this, data, false);
     }
 }

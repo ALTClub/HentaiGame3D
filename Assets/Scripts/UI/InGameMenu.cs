@@ -2,12 +2,13 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class InGameMenu : MonoBehaviour
 {
     [SerializeField] GameObject _escMenu, _header, _characteristicsMenu;
     [Header("Характеристики")]
-    [SerializeField] PlayerCharacteristics _playerCharacteristics;
+    [SerializeField] MyCharacteristics _playerCharacteristics;
     bool _somethingOpened = false;
     private void Start()
     {
@@ -54,4 +55,6 @@ public class InGameMenu : MonoBehaviour
         if (_escMenu.activeSelf) return;
         ToggleWindow(_characteristicsMenu);
     }
+    public void QuickSave() => SaveManager.Save(false);
+    public void MainMenu() => SceneManager.LoadSceneAsync(0);
 }
