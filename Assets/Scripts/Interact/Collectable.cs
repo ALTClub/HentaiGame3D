@@ -20,10 +20,11 @@ public class Collectable : Interactable
     }
     protected override void onLoad()
     {
-        if (SaveManager.GetSaveData(this) == "collected") Destroy(gameObject);
+        var data = SaveManager.GetSaveData(this);
+        if (data != default && bool.Parse(data)) Destroy(gameObject);
     }
     void save()
     {
-        SaveManager.UpdateSaveData(this, "collected");
+        SaveManager.UpdateSaveData(this, true.ToString());
     }
 }

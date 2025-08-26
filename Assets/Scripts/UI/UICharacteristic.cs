@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,21 +9,21 @@ public class UICharacteristic : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [SerializeField] TMP_Text _name, _level;
     [SerializeField] GameObject _hintPrefab;
     [SerializeField] MyCharacteristics _playerCharacteristics;
-    Level _currentLevel;
-    string _difinition;
-    GameObject _spawnedHint;
-    Transform _parent;
-    void setCharacteristic(Characteristic characteristic)
+    Level currentLevel;
+    string difinition;
+    GameObject spawnedHint;
+    Transform parent;
+    void setCharacteristic(ExpCharacteristic c)
     {
-        if (characteristic == null) return;
-        _parent = transform.parent;
-        _icon.sprite = characteristic.Icon;
-        _name.text = characteristic.Name;
-        _levelBG.color = characteristic.Level.color;
-        _level.text = characteristic.Level.name;
-        _difinition = characteristic.Definition;
-        _currentLevel = characteristic.Level;
-        _progress.fillAmount = characteristic.GetLevelProgress();
+        if (c == null) return;
+        parent = transform.parent;
+        _icon.sprite = c.Characteristic.Icon;
+        _name.text = c.Characteristic.Name;
+        _levelBG.color = c.Level.color;
+        _level.text = c.Level.name;
+        difinition = c.Characteristic.Definition;
+        currentLevel = c.Level;
+        _progress.fillAmount = c.GetLevelProgress;
     }
     private void OnEnable()
     {
@@ -33,23 +31,23 @@ public class UICharacteristic : MonoBehaviour, IPointerEnterHandler, IPointerExi
     }
     private void OnDisable()
     {
-        Destroy(_spawnedHint?.gameObject);
-        _spawnedHint = null;
+        Destroy(spawnedHint?.gameObject);
+        spawnedHint = null;
     }
     private void Update()
     {
-        if (_spawnedHint != null)
-            _spawnedHint.transform.position = Input.mousePosition;
+        if (spawnedHint != null)
+            spawnedHint.transform.position = Input.mousePosition;
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        _spawnedHint = Instantiate(_hintPrefab, transform.position, Quaternion.identity);
-        _spawnedHint.transform.SetParent(_parent);
-        foreach (Transform t in _spawnedHint.transform)
+        spawnedHint = Instantiate(_hintPrefab, transform.position, Quaternion.identity);
+        spawnedHint.transform.SetParent(parent);
+        foreach (Transform t in spawnedHint.transform)
         {
             TMP_Text text = t.GetComponent<TMP_Text>();
-            if (t.name == "Name") text.text = _difinition;
-            if (t.name == "Description") text.text = _currentLevel.description;
+            if (t.name == "Name") text.text = difinition;
+            if (t.name == "Description") text.text = currentLevel.description;
         }
     }
     public void OnPointerExit(PointerEventData eventData) => OnDisable();

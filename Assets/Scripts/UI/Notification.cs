@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,10 +19,11 @@ public class Notification : MonoBehaviour
             message = $"{action} предмет!\n{item.Name} {Mathf.Abs(count)}";
             StartCoroutine(open(item.Icon, message, item.Rarity, _duration));
         });
-        Characteristic.OnGetExp.AddListener((characteristic, value) =>
+        ExpCharacteristic.OnGetExp.AddListener((expChar, value, isNewLevel) =>
         {
-            message = $"{characteristic.Name} \n+{value} exp"; // +25 exp
-            StartCoroutine(open(characteristic.Icon, message, characteristic.Level.color, _duration));
+            message = $"{expChar.Characteristic.Name} \n" +
+            (isNewLevel ? $"New level: {expChar.Level.name}\n" : "" + $"+{value} exp");
+            StartCoroutine(open(expChar.Characteristic.Icon, message, expChar.Level.color, _duration));
         });
     }
     IEnumerator open(Sprite icon, string message, Color color, float duration)

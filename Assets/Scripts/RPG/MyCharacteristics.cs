@@ -1,31 +1,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class MyCharacteristics : MonoBehaviour
 {
-    [SerializeField] protected List<Characteristic> _characteristics;
-    public Dictionary<string, int> Experience = new();
-    public Characteristic GetCharacteristic(string name) =>
-        _characteristics.Find(c => c.name == name);
+    [SerializeField] protected List<ExpCharacteristic> _characteristics;
+    public ExpCharacteristic GetCharacteristic(string name) =>
+        _characteristics.Find(c => c.Characteristic.name == name);
+    Serialization<string, string> saveData => new(_characteristics.ToDictionary(c => c.Characteristic.name, c => c.Experience.ToString()));
     private void Start()
     {
-        foreach (var characteristic in _characteristics) characteristic.Init(this);
         load();
         SaveManager.OnSave.AddListener(save);
     }
+    public void AddExperience(string name, int value)
+    {
+        ExpCharacteristic characteristic = GetCharacteristic(name);
+        characteristic.AddExperience(value);
+        bool isNewLevel = characteristic.CheckNewLevel();
+        if (CompareTag("Player"))
+            ExpCharacteristic.OnGetExp.Invoke(characteristic, value, isNewLevel);
+    }
     private void save()
     {
-        string result = string.Join('\n', Experience);
-        SaveManager.UpdateSaveData(this, result, false);
+        SaveManager.UpdateSaveData(this, JsonUtility.ToJson(saveData), false);
     }
     private void load()
     {
-        string data = SaveManager.GetSaveData(this, false);
-        if (data == default) return;
-        Experience = data.Split('\n').
-            Select(pair => pair.Trim(new char[] { '[', ']' }).Split(',')).
-            ToDictionary(splitpair => splitpair[0], splitpair => int.Parse(splitpair[1]));
+        string json = SaveManager.GetSaveData(this, false);
+        if (json == default) return;
+        var dict = JsonUtility.FromJson<Serialization<string, string>>(json).ToDictionary();
+        foreach (var c in _characteristics)
+            c.DeserializeExp(dict[c.Characteristic.name]);
     }
 }
