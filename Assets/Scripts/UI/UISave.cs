@@ -1,4 +1,3 @@
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,15 +10,14 @@ public class UISave : MonoBehaviour
     [SerializeField] GameObject _autosaveIndicator;
     Dictionary<string, string> data;
     string path;
-    T deserialize<T>(string Key) => JsonConvert.DeserializeObject<T>(data[Key]);
     public void Init(Dictionary<string, string> saveData, string path)
     {
         data = saveData;
         this.path = path;
-        _locationName.text = deserialize<string>("LocationName");
-        _saveTime.text = deserialize<DateTime>("SaveTime").ToString();
-        _gameTime.text = deserialize<DateTime>("DayCycleManager (TimeManager)").ToString();
-        _autosaveIndicator.SetActive(deserialize<bool>("IsAutosave"));
+        _locationName.text = SaveManager.Deserialize<string>(data, "LocationName");
+        _saveTime.text = SaveManager.Deserialize<DateTime>(data, "SaveTime").ToString();
+        _gameTime.text = SaveManager.Deserialize<DateTime>(data, "DayCycleManager (TimeManager)").ToString();
+        _autosaveIndicator.SetActive(SaveManager.Deserialize<bool>(data, "IsAutosave"));
     }
     public void OnClick()
     {

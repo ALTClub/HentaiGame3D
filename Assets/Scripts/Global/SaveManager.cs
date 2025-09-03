@@ -54,4 +54,5 @@ public static class SaveManager
     public static bool CheckSaves() =>
         Directory.Exists(root) && Directory.GetFiles(root).Count() > 0;
     public static void Reset() => saveData = new();
+    public static T Deserialize<T>(Dictionary<string, string> data, string Key) => JsonConvert.DeserializeObject<T>(data[Key]);
 }

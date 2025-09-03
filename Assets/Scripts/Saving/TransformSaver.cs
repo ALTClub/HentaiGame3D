@@ -14,10 +14,11 @@ public class TransformSaver : MonoBehaviour
         var saveData = SaveManager.GetSaveData<float[][]>(this);
         if (saveData == default) return;
         var pos = arrayToVector(saveData[0]);
-        if (charController != default) charController.Move(pos);
-        else transform.position = pos;
+        if (charController != default) charController.enabled = false;
+        transform.position = pos;
         transform.rotation = Quaternion.Euler(arrayToVector(saveData[1]));
         transform.localScale = arrayToVector(saveData[2]);
+        if (charController != default) charController.enabled = true;
     }
     void save()
     {
