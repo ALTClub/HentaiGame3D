@@ -49,15 +49,14 @@ public class Inventory : MonoBehaviour
     }
     void save()
     {
-        Serialization<string, string> data = new(_inventory.ToDictionary(slot => slot.Item.name, slot => slot.Count.ToString()));
-        SaveManager.UpdateSaveData(this, JsonUtility.ToJson(data), !Global);
+        var saveData = _inventory.ToDictionary(slot => slot.Item.name, slot => slot.Count);
+        SaveManager.UpdateSaveData(this, saveData, !Global);
     }
     void load()
     {
-        string json = SaveManager.GetSaveData(this, !Global);
-        if (json == default) return;
-        var dict = JsonUtility.FromJson<Serialization<string, string>>(json).ToDictionary();
+        var dict = SaveManager.GetSaveData<Dictionary<string, int>>(this, !Global);
+        if (dict == default) return;
         foreach (var slot in dict)
-            _inventory.Add(new Slot(Resources.Load<Item>($"Items/{slot.Key}"), int.Parse(slot.Value)));
+            _inventory.Add(new Slot(Resources.Load<Item>($"Items/{slot.Key}"), slot.Value));
     }
 }

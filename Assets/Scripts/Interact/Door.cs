@@ -48,13 +48,13 @@ public class Door : Interactable
     }
     protected override void onSave()
     {
-        SaveManager.UpdateSaveData(this, _isOpen.ToString());
+        SaveManager.UpdateSaveData(this, _isOpen);
     }
     protected override void onLoad()
     {
-        string saveData = SaveManager.GetSaveData(this);
-        if (saveData == null) return;
-        _isOpen = bool.Parse(saveData);
+        var saveData = SaveManager.GetSaveData<bool>(this);
+        if (saveData == default) return;
+        _isOpen = saveData;
         _prompt = (_isOpen) ? "Закрыть" : "Открыть";
         Quaternion targetRotation = Quaternion.Euler(0, 0, (_isOpen) ? _openedAngle : _closedAngel);
         _door.transform.localRotation = targetRotation;

@@ -7,7 +7,7 @@ public class MyCharacteristics : MonoBehaviour
     [SerializeField] List<ExpCharacteristic> _characteristics;
     public ExpCharacteristic GetCharacteristic(string name) =>
         _characteristics.Find(c => c.Characteristic.name == name);
-    Serialization<string, string> saveData => new(_characteristics.ToDictionary(c => c.Characteristic.name, c => c.Experience.ToString()));
+    Dictionary<string, int> saveData => _characteristics.ToDictionary(c => c.Characteristic.name, c => c.Experience);
     private void Start()
     {
         load();
@@ -23,14 +23,13 @@ public class MyCharacteristics : MonoBehaviour
     }
     private void save()
     {
-        SaveManager.UpdateSaveData(this, JsonUtility.ToJson(saveData), false);
+        SaveManager.UpdateSaveData(this, saveData, false);
     }
     private void load()
     {
-        string json = SaveManager.GetSaveData(this, false);
-        if (json == default) return;
-        var dict = JsonUtility.FromJson<Serialization<string, string>>(json).ToDictionary();
+        var dict = SaveManager.GetSaveData<Dictionary<string, int>>(this, false);
+        if (dict == default) return;
         foreach (var c in _characteristics)
-            c.DeserializeExp(dict[c.Characteristic.name]);
+            c.Load(dict[c.Characteristic.name]);
     }
 }

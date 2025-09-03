@@ -11,9 +11,9 @@ public class ExpCharacteristic
 
     public static UnityEvent<ExpCharacteristic, int, bool> OnGetExp = new();
     public int Experience { get; private set; }
-    public void DeserializeExp(string value)
+    public void Load(int value)
     {
-        Experience = int.Parse(value);
+        Experience = value;
         oldLevel = current;
     }
     public Level Level => oldLevel == default ? _characteristic.Levels[0] : oldLevel;

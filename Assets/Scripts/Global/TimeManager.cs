@@ -44,9 +44,8 @@ public class TimeManager : MonoBehaviour
     void Awake()
     {
         //load
-        string saveData = SaveManager.GetSaveData(this, false);
-        if (saveData != null)
-            dateTime = DateTime.Parse(saveData);
+        var data = SaveManager.GetSaveData<DateTime>(this, false);
+        if (data != default) dateTime = data;
         mounth = dateTime.Month;
 
         //events
@@ -54,9 +53,5 @@ public class TimeManager : MonoBehaviour
         OnChangeTime.AddListener(checkNewMonth);
     }
 
-    public void save()
-    {
-        string data = dateTime.ToString("dd/MM/yyyy HH:mm:ss");
-        SaveManager.UpdateSaveData(this, data, false);
-    }
+    public void save() => SaveManager.UpdateSaveData(this, dateTime, false);
 }

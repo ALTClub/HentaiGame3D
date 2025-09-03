@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,17 +12,17 @@ public static class SaveManager
     public static UnityEvent OnSave = new();
     static Dictionary<string, string> saveData = new();
     public static string root => Application.dataPath + @"\Saves\";
-    public static void UpdateSaveData(object sender, string data, bool UseSceneID = true)
+    public static void UpdateSaveData<T>(object sender, T data, bool UseSceneID = true)
     {
         string key = (UseSceneID ? SceneManager.GetActiveScene().name + ": " : "") + sender.ToString();
-        saveData[key] = data;
+        saveData[key] = JsonConvert.SerializeObject(data);
     }
-    public static string GetSaveData(object sender, bool UseSceneID = true)
+    public static T GetSaveData<T>(object sender, bool UseSceneID = true)
     {
         string key = (UseSceneID ? SceneManager.GetActiveScene().name + ": " : "") + sender.ToString();
         if (saveData.ContainsKey(key))
-            return saveData[key];
-        else return null;
+            return JsonConvert.DeserializeObject<T>(saveData[key]);
+        else return default;
     }
     public static void ClearData()
     {
@@ -30,9 +31,9 @@ public static class SaveManager
     public static void Save(bool isAutosave)
     {
         OnSave.Invoke();
-        UpdateSaveData("SaveTime", DateTime.Now.ToString(), false);
-        UpdateSaveData("IsAutosave", isAutosave.ToString(), false);
-        string json = JsonUtility.ToJson(new Serialization<string, string>(saveData));
+        UpdateSaveData("SaveTime", DateTime.Now, false);
+        UpdateSaveData("IsAutosave", isAutosave, false);
+        string json = JsonConvert.SerializeObject(saveData);
         if (!Directory.Exists(root))
             Directory.CreateDirectory(root);
         File.WriteAllText(root + $"Save{DateTime.Now:dd-MM-yyyy-HH-mm}.json", json);
@@ -40,7 +41,7 @@ public static class SaveManager
     public static void Load(Dictionary<string, string> data)
     {
         saveData = data;
-        SceneManager.LoadSceneAsync(saveData["SceneName"]);
+        SceneManager.LoadSceneAsync(GetSaveData<string>("SceneName", false));
         Time.timeScale = 1;
     }
     public static Dictionary<string, Dictionary<string, string>> GetSaves()
@@ -48,9 +49,9 @@ public static class SaveManager
         if (!CheckSaves()) return null;
         var paths = Directory.GetFiles(root).Where(path => path.Substring(path.Length - 4) == "json");
         return paths.ToDictionary(path => path, path =>
-        JsonUtility.FromJson<Serialization<string, string>>(File.ReadAllText(path)).ToDictionary());
-
+        JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(path)));
     }
     public static bool CheckSaves() =>
         Directory.Exists(root) && Directory.GetFiles(root).Count() > 0;
+    public static void Reset() => saveData = new();
 }
