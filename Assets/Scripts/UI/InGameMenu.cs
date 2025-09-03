@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class InGameMenu : MonoBehaviour
 {
-    [SerializeField] GameObject _escMenu, _header, _characteristicsMenu;
+    [SerializeField] GameObject _escMenu, _header, _characteristicsMenu, _loadingWindow;
     [Header("Характеристики")]
     [SerializeField] MyCharacteristics _playerCharacteristics;
     bool _somethingOpened = false;
@@ -30,6 +30,7 @@ public class InGameMenu : MonoBehaviour
         _escMenu.SetActive(false);
         _characteristicsMenu.SetActive(false);
         _header.SetActive(false);
+        _loadingWindow.SetActive(false);
 
         _somethingOpened = false;
     }

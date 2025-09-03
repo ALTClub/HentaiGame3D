@@ -1,27 +1,26 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Collectable : Interactable
 {
     [SerializeField] Item _item;
     [SerializeField] int _count = 1;
-    Inventory _playerInventory;
-    private void Start()
-    {
-        _playerInventory = GameObject.FindGameObjectWithTag("Player")
-            .GetComponent<Inventory>();
-    }
     public override void Interact()
     {
-        _playerInventory.UpdateCountBy(_item, _count);
+        GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>().UpdateCountBy(_item, _count);
         save();
+        StartCoroutine(collect());
+    }
+    IEnumerator collect()
+    {
+        transform.Translate(0, -1000, 0);
+        yield return new WaitForEndOfFrame();
         Destroy(gameObject);
     }
     protected override void onLoad()
     {
         if (SaveManager.GetSaveData<bool>(this) != default)
-            Destroy(gameObject);
+            StartCoroutine(collect());
     }
     void save() => SaveManager.UpdateSaveData(this, true);
 }
