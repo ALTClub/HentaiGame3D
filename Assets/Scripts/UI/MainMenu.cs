@@ -4,6 +4,10 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    private void Start()
+    {
+        Time.timeScale = 1.0f;
+    }
     public void NewGame()
     {
         SaveManager.Reset();

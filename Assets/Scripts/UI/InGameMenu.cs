@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -12,17 +10,17 @@ public class InGameMenu : MonoBehaviour
     bool _somethingOpened = false;
     private void Start()
     {
-        InputManager.Input.Player.EscMenu.performed += OnEsc;
+        InputManager.Input.Player.EscMenu.performed += onEsc;
         InputManager.Input.Player.Characteristics.performed += toggleCharacteristics;
     }
     private void OnDisable()
     {
-        InputManager.Input.Player.EscMenu.performed -= OnEsc;
+        InputManager.Input.Player.EscMenu.performed -= onEsc;
         InputManager.Input.Player.Characteristics.performed -= toggleCharacteristics;
     }
     public void ResetButton() => SaveManager.ClearData();
     //windows
-    void CloseAll()
+    public void CloseAll()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Time.timeScale = 1;
@@ -34,7 +32,7 @@ public class InGameMenu : MonoBehaviour
 
         _somethingOpened = false;
     }
-    void ToggleWindow(GameObject Window)
+    void toggleWindow(GameObject Window)
     {
         CloseAll();
         Cursor.lockState = CursorLockMode.None;
@@ -44,18 +42,17 @@ public class InGameMenu : MonoBehaviour
         if (Window != _escMenu) _header.SetActive(Window.activeSelf);
         if (Window.activeSelf) _somethingOpened = true;
     }
-    void OnEsc(InputAction.CallbackContext ctx)
+    void onEsc(InputAction.CallbackContext ctx)
     {
         if (_somethingOpened) CloseAll();
-        else ToggleWindow(_escMenu);
+        else toggleWindow(_escMenu);
     }
 
     //characteristics
     void toggleCharacteristics(InputAction.CallbackContext ctx)
     {
         if (_escMenu.activeSelf) return;
-        ToggleWindow(_characteristicsMenu);
+        toggleWindow(_characteristicsMenu);
     }
-    public void QuickSave() => SaveManager.Save(false);
     public void MainMenu() => SceneManager.LoadSceneAsync(0);
 }

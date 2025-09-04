@@ -48,8 +48,11 @@ public static class SaveManager
     {
         if (!CheckSaves()) return null;
         var paths = Directory.GetFiles(root).Where(path => path.Substring(path.Length - 4) == "json");
-        return paths.ToDictionary(path => path, path =>
+        var saves = paths.ToDictionary(path => path, path =>
         JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(path)));
+        var sorted = saves.OrderByDescending(kv => SaveManager.Deserialize<DateTime>(kv.Value, "SaveTime"))
+            .ToDictionary(kv => kv.Key, kv => kv.Value);
+        return sorted;
     }
     public static bool CheckSaves() =>
         Directory.Exists(root) && Directory.GetFiles(root).Count() > 0;

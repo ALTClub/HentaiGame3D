@@ -80,6 +80,24 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuickSave"",
+                    ""type"": ""Button"",
+                    ""id"": ""85641c72-9353-419b-938b-74e8e80c4748"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuickLoad"",
+                    ""type"": ""Button"",
+                    ""id"": ""d201f752-80b6-4bfb-af91-f03491d7b082"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -247,6 +265,28 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""EscMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ef8b28f1-d7b5-4ef1-a01a-75afff25409a"",
+                    ""path"": ""<Keyboard>/f5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""QuickSave"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fa774bea-01ac-4886-af5e-738a7bcd3067"",
+                    ""path"": ""<Keyboard>/f9"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""QuickLoad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -306,6 +346,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Player_Sellect = m_Player.FindAction("Sellect", throwIfNotFound: true);
         m_Player_Characteristics = m_Player.FindAction("Characteristics", throwIfNotFound: true);
         m_Player_EscMenu = m_Player.FindAction("EscMenu", throwIfNotFound: true);
+        m_Player_QuickSave = m_Player.FindAction("QuickSave", throwIfNotFound: true);
+        m_Player_QuickLoad = m_Player.FindAction("QuickLoad", throwIfNotFound: true);
         // Dialogs
         m_Dialogs = asset.FindActionMap("Dialogs", throwIfNotFound: true);
         m_Dialogs_Skip = m_Dialogs.FindAction("Skip", throwIfNotFound: true);
@@ -376,6 +418,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Sellect;
     private readonly InputAction m_Player_Characteristics;
     private readonly InputAction m_Player_EscMenu;
+    private readonly InputAction m_Player_QuickSave;
+    private readonly InputAction m_Player_QuickLoad;
     public struct PlayerActions
     {
         private @PlayerInput m_Wrapper;
@@ -386,6 +430,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         public InputAction @Sellect => m_Wrapper.m_Player_Sellect;
         public InputAction @Characteristics => m_Wrapper.m_Player_Characteristics;
         public InputAction @EscMenu => m_Wrapper.m_Player_EscMenu;
+        public InputAction @QuickSave => m_Wrapper.m_Player_QuickSave;
+        public InputAction @QuickLoad => m_Wrapper.m_Player_QuickLoad;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -413,6 +459,12 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @EscMenu.started += instance.OnEscMenu;
             @EscMenu.performed += instance.OnEscMenu;
             @EscMenu.canceled += instance.OnEscMenu;
+            @QuickSave.started += instance.OnQuickSave;
+            @QuickSave.performed += instance.OnQuickSave;
+            @QuickSave.canceled += instance.OnQuickSave;
+            @QuickLoad.started += instance.OnQuickLoad;
+            @QuickLoad.performed += instance.OnQuickLoad;
+            @QuickLoad.canceled += instance.OnQuickLoad;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -435,6 +487,12 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @EscMenu.started -= instance.OnEscMenu;
             @EscMenu.performed -= instance.OnEscMenu;
             @EscMenu.canceled -= instance.OnEscMenu;
+            @QuickSave.started -= instance.OnQuickSave;
+            @QuickSave.performed -= instance.OnQuickSave;
+            @QuickSave.canceled -= instance.OnQuickSave;
+            @QuickLoad.started -= instance.OnQuickLoad;
+            @QuickLoad.performed -= instance.OnQuickLoad;
+            @QuickLoad.canceled -= instance.OnQuickLoad;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -515,6 +573,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnSellect(InputAction.CallbackContext context);
         void OnCharacteristics(InputAction.CallbackContext context);
         void OnEscMenu(InputAction.CallbackContext context);
+        void OnQuickSave(InputAction.CallbackContext context);
+        void OnQuickLoad(InputAction.CallbackContext context);
     }
     public interface IDialogsActions
     {
