@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class MyCharacteristics : MonoBehaviour
 {
-    [SerializeField] List<ExpCharacteristic> _characteristics;
+    [SerializeField] List<Characteristic> _characteristics;
     public ExpCharacteristic GetCharacteristic(string name) =>
-        _characteristics.Find(c => c.Characteristic.name == name);
-    Dictionary<string, int> saveData => _characteristics.ToDictionary(c => c.Characteristic.name, c => c.Experience);
-    private void Start()
+        characteristics.Value.Find(c => c.Name == name);
+    SaveData<List<ExpCharacteristic>> characteristics;
+    private void Awake()
     {
-        load();
-        SaveManager.OnSave.AddListener(save);
+        characteristics = new(this, true, _characteristics.Select(c => new ExpCharacteristic(c)).ToList());
+        var bad = characteristics.Value.Where(t => t.Characteristic == null);
+        if (bad.Count() != 0)
+            characteristics.Value = bad.Select(ec => new ExpCharacteristic(_characteristics.Find(_c => _c.name == ec.Name), ec.Experience))
+                .ToList().Concat(characteristics.Value).ToList();
     }
     public void AddExperience(string name, int value)
     {
@@ -20,16 +23,5 @@ public class MyCharacteristics : MonoBehaviour
         bool isNewLevel = characteristic.CheckNewLevel();
         if (CompareTag("Player"))
             ExpCharacteristic.OnGetExp.Invoke(characteristic, value, isNewLevel);
-    }
-    private void save()
-    {
-        SaveManager.UpdateSaveData(this, saveData, false);
-    }
-    private void load()
-    {
-        var dict = SaveManager.GetSaveData<Dictionary<string, int>>(this, false);
-        if (dict == default) return;
-        foreach (var c in _characteristics)
-            c.Load(dict[c.Characteristic.name]);
     }
 }

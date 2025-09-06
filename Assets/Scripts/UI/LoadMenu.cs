@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LoadMenu : MonoBehaviour
@@ -9,21 +10,22 @@ public class LoadMenu : MonoBehaviour
     private void Start()
     {
         UpdateButton();
+        if (InputManager.Input == default) return;
         InputManager.Input.Player.QuickSave.performed += ctx => QuickSave();
         InputManager.Input.Player.QuickLoad.performed += ctx => quickLoad();
     }
     private void OnDisable()
     {
+        if (InputManager.Input == default) return;
         InputManager.Input.Player.QuickSave.performed -= ctx => QuickSave();
         InputManager.Input.Player.QuickLoad.performed -= ctx => quickLoad();
     }
     public void RefreshSaves(Transform parent)
     {
-
         foreach (Transform t in parent)
             Destroy(t.gameObject);
         foreach (var save in SaveManager.GetSaves())
-            Instantiate(_savePrefab, parent).GetComponent<UISave>().Init(save.Value, save.Key);
+            Instantiate(_savePrefab, parent).GetComponent<UISave>().Init(save);
     }
     public void UpdateButton() =>
         _continueButton.interactable = SaveManager.CheckSaves();
@@ -31,7 +33,7 @@ public class LoadMenu : MonoBehaviour
     void quickLoad()
     {
         var saves = SaveManager.GetSaves();
-        if (saves == default || saves.Count == 0) return;
-        SaveManager.Load(saves.First().Value);
+        if (saves == default) return;
+        SaveManager.Load(saves.First());
     }
 }

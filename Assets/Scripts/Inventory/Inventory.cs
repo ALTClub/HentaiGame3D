@@ -1,16 +1,17 @@
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class Inventory : MonoBehaviour
 {
-    [SerializeField] bool Global;
+    [SerializeField] bool _isGlobal;
     // разделить на группы
     public class Slot
     {
-        public Item Item;
+        [JsonIgnore] public Item Item;
         public int Count = 0;
+        public string ItemName { get => Item.name; set { Item = Resources.Load<Item>($"Items/{value}"); } }
         public Slot(Item item, int count)
         {
             Item = item;
@@ -18,22 +19,21 @@ public class Inventory : MonoBehaviour
         }
     }
     public static UnityEvent<Item, int, object> OnAddItem = new();
-    List<Slot> _inventory = new();
-    private void Start()
+    SaveData<List<Slot>> inventory;
+    private void Awake()
     {
-        load();
-        SaveManager.OnSave.AddListener(save);
+        inventory = new(this, _isGlobal, new());
     }
     public void UpdateCountBy(Item item, int count = 1)
     {
-        Slot slot = _inventory.Find(slot => slot.Item == item);
+        Slot slot = inventory.Value.Find(slot => slot.Item == item);
 
         if (slot != default && slot.Count + count >= 0)
         {
             slot.Count += count;
-            if (slot.Count == 0) _inventory.Remove(slot);
+            if (slot.Count == 0) inventory.Value.Remove(slot);
         }
-        else if (count > 0) _inventory.Add(new Slot(item, count));
+        else if (count > 0) inventory.Value.Add(new Slot(item, count));
         else
         {
             Debug.Log("not enaugh");
@@ -44,19 +44,7 @@ public class Inventory : MonoBehaviour
     }
     public int GetItemCount(Item item)
     {
-        var slot = _inventory.Find(slot => slot.Item == item);
+        var slot = inventory.Value.Find(slot => slot.Item == item);
         return slot == default ? 0 : slot.Count;
-    }
-    void save()
-    {
-        var saveData = _inventory.ToDictionary(slot => slot.Item.name, slot => slot.Count);
-        SaveManager.UpdateSaveData(this, saveData, !Global);
-    }
-    void load()
-    {
-        var dict = SaveManager.GetSaveData<Dictionary<string, int>>(this, !Global);
-        if (dict == default) return;
-        foreach (var slot in dict)
-            _inventory.Add(new Slot(Resources.Load<Item>($"Items/{slot.Key}"), slot.Value));
     }
 }

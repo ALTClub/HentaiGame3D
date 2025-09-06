@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
@@ -8,24 +6,22 @@ public class UISave : MonoBehaviour
 {
     [SerializeField] TMP_Text _locationName, _saveTime, _gameTime;
     [SerializeField] GameObject _autosaveIndicator;
-    Dictionary<string, string> data;
-    string path;
-    public void Init(Dictionary<string, string> saveData, string path)
+    Save save;
+    public void Init(Save saveData)
     {
-        data = saveData;
-        this.path = path;
-        _locationName.text = SaveManager.Deserialize<string>(data, "LocationName");
-        _saveTime.text = SaveManager.Deserialize<DateTime>(data, "SaveTime").ToString();
-        _gameTime.text = SaveManager.Deserialize<DateTime>(data, "DayCycleManager (TimeManager)").ToString();
-        _autosaveIndicator.SetActive(SaveManager.Deserialize<bool>(data, "IsAutosave"));
+        save = saveData;
+        _locationName.text = save.LocationName;
+        _saveTime.text = save.SaveTime.ToString();
+        _gameTime.text = save.GameTime.ToString();
+        _autosaveIndicator.SetActive(save.IsAutosave);
     }
     public void OnClick()
     {
-        SaveManager.Load(data);
+        SaveManager.Load(save);
     }
     public void Delete()
     {
-        File.Delete(path);
+        File.Delete(save.Path);
         Destroy(gameObject);
     }
 }

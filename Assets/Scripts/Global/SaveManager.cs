@@ -31,31 +31,62 @@ public static class SaveManager
     public static void Save(bool isAutosave)
     {
         OnSave.Invoke();
-        UpdateSaveData("SaveTime", DateTime.Now, false);
-        UpdateSaveData("IsAutosave", isAutosave, false);
-        string json = JsonConvert.SerializeObject(saveData);
+        var save = new Save(isAutosave, saveData);
         if (!Directory.Exists(root))
             Directory.CreateDirectory(root);
-        File.WriteAllText(root + $"Save{DateTime.Now:dd-MM-yyyy-HH-mm}.json", json);
+        File.WriteAllText(save.Path, JsonConvert.SerializeObject(save));
     }
-    public static void Load(Dictionary<string, string> data)
+    public static void Load(Save save)
     {
-        saveData = data;
-        SceneManager.LoadSceneAsync(GetSaveData<string>("SceneName", false));
+        saveData = save.SaveData;
+        SceneManager.LoadSceneAsync(save.SceneName);
         Time.timeScale = 1;
     }
-    public static Dictionary<string, Dictionary<string, string>> GetSaves()
+    public static IEnumerable<Save> GetSaves()
     {
         if (!CheckSaves()) return null;
         var paths = Directory.GetFiles(root).Where(path => path.Substring(path.Length - 4) == "json");
-        var saves = paths.ToDictionary(path => path, path =>
-        JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(path)));
-        var sorted = saves.OrderByDescending(kv => SaveManager.Deserialize<DateTime>(kv.Value, "SaveTime"))
-            .ToDictionary(kv => kv.Key, kv => kv.Value);
+        var saves = paths.Select(path => JsonConvert.DeserializeObject<Save>(File.ReadAllText(path)));
+        var sorted = saves.OrderByDescending(save => save.SaveTime);
         return sorted;
     }
     public static bool CheckSaves() =>
         Directory.Exists(root) && Directory.GetFiles(root).Count() > 0;
     public static void Reset() => saveData = new();
-    public static T Deserialize<T>(Dictionary<string, string> data, string Key) => JsonConvert.DeserializeObject<T>(data[Key]);
+}
+public struct Save
+{
+    public string Path, LocationName, SceneName;
+    public DateTime SaveTime, GameTime;
+    public bool IsAutosave;
+    public Dictionary<string, string> SaveData;
+    public Save(bool isAutosave, Dictionary<string, string> saveData)
+    {
+        Path = SaveManager.root + $"Save{DateTime.Now:dd-MM-yyyy-HH-mm}.json";
+        LocationName = Location.Current;
+        SceneName = SceneManager.GetActiveScene().name;
+        SaveTime = DateTime.Now;
+        GameTime = TimeManager.GetDateTime;
+        IsAutosave = isAutosave;
+        SaveData = saveData;
+    }
+}
+[Serializable]
+public class SaveData<T>
+{
+    public T Value;
+    string sender;
+    bool isGlobal;
+    public SaveData(object sender, bool isGlobal, T defaultValue)
+    {
+        this.sender = sender.ToString();
+        this.isGlobal = isGlobal;
+        var data = SaveManager.GetSaveData<T>(sender, !isGlobal);
+        Value = data == null || data.Equals(default(T)) ? defaultValue : data;
+        SaveManager.OnSave.AddListener(save);
+    }
+    void save()
+    {
+        SaveManager.UpdateSaveData<T>(sender, Value, !isGlobal);
+    }
 }
