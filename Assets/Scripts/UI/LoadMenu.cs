@@ -31,7 +31,7 @@ public class LoadMenu : MonoBehaviour
     public void UpdateButton()
     {
         saves = SaveManager.GetSaves();
-        _continueButton.interactable = saves.Count() > 0;
+        _continueButton.interactable = saves != null && saves.Count() > 0;
     }
     public void QuickSave() => SaveManager.Save(false);
     void quickLoad()
