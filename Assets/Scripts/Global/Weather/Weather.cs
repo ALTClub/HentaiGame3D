@@ -8,56 +8,40 @@ public class Weather : MonoBehaviour
 {
     [SerializeField] WeatherSettings _settings;
     ParticleSystem rainParticle;
-    static List<Event> rains = new();
+    static SaveData<List<Event>> rains;
     public static bool IsRain { get; private set; }
     Coroutine rain;
     private void Start()
     {
         rainParticle = GetComponent<ParticleSystem>();
 
-        if (!load()) rainSchedule();
-
-        //events
-        TimeManager.OnNewMonth.AddListener(rainSchedule);
-        TimeManager.OnChangeTime.AddListener(checkRain);
-        SaveManager.OnSave.AddListener(save);
-    }
-    private bool load()
-    {
-        string saveData = SaveManager.GetSaveData(this, false);
-        if (saveData == default) return false;
-
-        rains.AddRange(saveData.Split('\n').Select(serialized => new Event(serialized)));
-        if (rains.Any(rain => rain.Started))
+        rains = new(this, true, new());
+        if (rains.Value.Count == 0) scheduleRains();
+        if (rains.Value.Any(rain => rain.Started))
             rain = StartCoroutine(rainCoroutine(true));
 
-        return true;
+        //events
+        TimeManager.OnNewMonth.AddListener(scheduleRains);
+        TimeManager.OnChangeTime.AddListener(updateRains);
     }
-    void save()
+    void scheduleRains()
     {
-        if (rains.Count <= 0) return;
-        List<string> saveData = new();
-        foreach (var rain in rains) saveData.Add(rain.Serialize());
-        SaveManager.UpdateSaveData(this, string.Join('\n', saveData.ToArray()), false);
-    }
-    void rainSchedule()
-    {
-        rains.Clear();
-        while (rains.Count < _settings.RainPerMonth)
+        rains.Value.Clear();
+        while (rains.Value.Count < _settings.RainPerMonth)
         {
-            DateTime rainDay = TimeManager.GetRandomDay(rains.Select(rain => rain.StartDate.Day).ToArray(), _settings);
+            DateTime rainDay = TimeManager.GetRandomDay(rains.Value.Select(rain => rain.Start.Day).ToArray(), _settings);
             TimeSpan rainDuration = TimeSpan.FromMinutes(UnityEngine.Random.Range(_settings.MinRainDuration, _settings.MaxRainDuration));
 
             Event rain = new(rainDay, rainDuration);
-            rains.Add(rain);
+            rains.Value.Add(rain);
         }
     }
-    void checkRain()
+    void updateRains()
     {
         List<Event> completed = new();
-        foreach (var rain in rains)
+        foreach (var rain in rains.Value)
         {
-            TimeSpan diff = TimeManager.GetDateTime - rain.StartDate;
+            TimeSpan diff = TimeManager.GetDateTime - rain.Start;
             if (diff <= TimeSpan.Zero) continue;
             if (diff > rain.Duration)
             {
@@ -71,7 +55,7 @@ public class Weather : MonoBehaviour
                 rain.Started = true;
             }
         }
-        foreach (var rain in completed) rains.Remove(rain);
+        foreach (var rain in completed) rains.Value.Remove(rain);
     }
     IEnumerator rainCoroutine(bool enabled)
     {

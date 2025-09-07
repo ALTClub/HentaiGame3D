@@ -12,19 +12,20 @@ public class Notification : MonoBehaviour
     private void Start()
     {
         anim = GetComponent<Animator>();
-        string message;
-        Inventory.OnAddItem.AddListener((item, count, sender) =>
-        {
-            string action = (count < 0) ? "Отдан" : "Добавлен";
-            message = $"{action} предмет!\n{item.Name} {Mathf.Abs(count)}";
-            StartCoroutine(open(item.Icon, message, item.Rarity, _duration));
-        });
-        ExpCharacteristic.OnGetExp.AddListener((expChar, value, isNewLevel) =>
-        {
-            message = $"{expChar.Characteristic.Name} \n" +
+        Inventory.OnAddItem.AddListener(handleItemAdded);
+        ExpCharacteristic.OnGetExp.AddListener(handleExpGained);
+    }
+    private void handleItemAdded(Item item, int count, object sender)
+    {
+        string action = (count < 0) ? "Отдан" : "Добавлен";
+        string message = $"{action} предмет!\n{item.Name} {Mathf.Abs(count)}";
+        StartCoroutine(open(item.Icon, message, item.Rarity, _duration));
+    }
+    private void handleExpGained(ExpCharacteristic expChar, int value, bool isNewLevel)
+    {
+        string message = $"{expChar.Characteristic.Name} \n" +
             (isNewLevel ? $"New level: {expChar.Level.name}\n" : "" + $"+{value} exp");
-            StartCoroutine(open(expChar.Characteristic.Icon, message, expChar.Level.color, _duration));
-        });
+        StartCoroutine(open(expChar.Characteristic.Icon, message, expChar.Level.color, _duration));
     }
     IEnumerator open(Sprite icon, string message, Color color, float duration)
     {

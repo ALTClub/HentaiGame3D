@@ -1,28 +1,27 @@
-using System;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class InGameMenu : MonoBehaviour
 {
-    [SerializeField] GameObject _escMenu, _header, _characteristicsMenu;
+    [SerializeField] GameObject _escMenu, _header, _characteristicsMenu, _loadingWindow;
+    [SerializeField] LoadMenu _loadMenu;
     [Header("Характеристики")]
     [SerializeField] MyCharacteristics _playerCharacteristics;
     bool _somethingOpened = false;
     private void Start()
     {
-        InputManager.Input.Player.EscMenu.performed += OnEsc;
+        InputManager.Input.Player.EscMenu.performed += onEsc;
         InputManager.Input.Player.Characteristics.performed += toggleCharacteristics;
     }
     private void OnDisable()
     {
-        InputManager.Input.Player.EscMenu.performed -= OnEsc;
+        InputManager.Input.Player.EscMenu.performed -= onEsc;
         InputManager.Input.Player.Characteristics.performed -= toggleCharacteristics;
     }
     public void ResetButton() => SaveManager.ClearData();
     //windows
-    void CloseAll()
+    public void CloseAll()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Time.timeScale = 1;
@@ -30,10 +29,11 @@ public class InGameMenu : MonoBehaviour
         _escMenu.SetActive(false);
         _characteristicsMenu.SetActive(false);
         _header.SetActive(false);
+        _loadingWindow.SetActive(false);
 
         _somethingOpened = false;
     }
-    void ToggleWindow(GameObject Window)
+    void toggleWindow(GameObject Window)
     {
         CloseAll();
         Cursor.lockState = CursorLockMode.None;
@@ -43,18 +43,21 @@ public class InGameMenu : MonoBehaviour
         if (Window != _escMenu) _header.SetActive(Window.activeSelf);
         if (Window.activeSelf) _somethingOpened = true;
     }
-    void OnEsc(InputAction.CallbackContext ctx)
+    void onEsc(InputAction.CallbackContext ctx)
     {
         if (_somethingOpened) CloseAll();
-        else ToggleWindow(_escMenu);
+        else
+        {
+            _loadMenu.UpdateButton();
+            toggleWindow(_escMenu);
+        }
     }
 
     //characteristics
     void toggleCharacteristics(InputAction.CallbackContext ctx)
     {
         if (_escMenu.activeSelf) return;
-        ToggleWindow(_characteristicsMenu);
+        toggleWindow(_characteristicsMenu);
     }
-    public void QuickSave() => SaveManager.Save(false);
     public void MainMenu() => SceneManager.LoadSceneAsync(0);
 }

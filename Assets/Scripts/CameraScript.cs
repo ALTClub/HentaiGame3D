@@ -1,14 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
+    [SerializeField] CinemachineFreeLook _cinemachine;
     Camera cam;
     void Start()
     {
         cam = GetComponent<Camera>();
         Cursor.lockState = CursorLockMode.Locked;
+        SaveManager.OnSave.AddListener(save);
+        load();
     }
     public Vector3 Rotate(Vector3 direction, Transform player)
     {
@@ -37,5 +39,21 @@ public class CameraScript : MonoBehaviour
         Vector3 verticalDirection = Vector3.up * direction.y;
         Vector3 horizontalDirection = forward + right;
         return verticalDirection + horizontalDirection;
+    }
+    void load()
+    {
+        var saveData = SaveManager.GetSaveData<float[]>(this);
+        if (saveData == default) return;
+        _cinemachine.m_XAxis.Value = saveData[0];
+        _cinemachine.m_YAxis.Value = saveData[1];
+    }
+    void save()
+    {
+        float[] data = new float[]
+        {
+            _cinemachine.m_XAxis.Value,
+            _cinemachine.m_YAxis.Value
+        };
+        SaveManager.UpdateSaveData(this, data);
     }
 }
