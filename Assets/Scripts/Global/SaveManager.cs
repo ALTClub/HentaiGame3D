@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,7 @@ public static class SaveManager
     public static UnityEvent OnSave = new();
     static Dictionary<string, string> saveData = new();
     public static string root => Application.dataPath + @"\Saves\";
+    const string pattern = @".*\\Save(\d{2})-(\d{2})-(\d{4}-(\d{2})-(\d{2})\.json$)";
     public static void UpdateSaveData<T>(object sender, T data, bool UseSceneID = true)
     {
         string key = (UseSceneID ? SceneManager.GetActiveScene().name + ": " : "") + sender.ToString();
@@ -44,14 +46,17 @@ public static class SaveManager
     }
     public static IEnumerable<Save> GetSaves()
     {
-        if (!CheckSaves()) return null;
-        var paths = Directory.GetFiles(root).Where(path => path.Substring(path.Length - 4) == "json");
-        var saves = paths.Select(path => JsonConvert.DeserializeObject<Save>(File.ReadAllText(path)));
+        if (!Directory.Exists(root)) return null;
+        var paths = Directory.GetFiles(root).Where(path => new Regex(pattern).IsMatch(path));
+        var saves = paths.Select(path =>
+        {
+            try { return (Save?)JsonConvert.DeserializeObject<Save>(File.ReadAllText(path)); }
+            catch { return null; }
+        })
+        .Where(save => save.HasValue).Select(save => save.Value);
         var sorted = saves.OrderByDescending(save => save.SaveTime);
         return sorted;
     }
-    public static bool CheckSaves() =>
-        Directory.Exists(root) && Directory.GetFiles(root).Count() > 0;
     public static void Reset() => saveData = new();
 }
 public struct Save

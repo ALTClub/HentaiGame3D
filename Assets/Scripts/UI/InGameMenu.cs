@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 public class InGameMenu : MonoBehaviour
 {
     [SerializeField] GameObject _escMenu, _header, _characteristicsMenu, _loadingWindow;
+    [SerializeField] LoadMenu _loadMenu;
     [Header("Характеристики")]
     [SerializeField] MyCharacteristics _playerCharacteristics;
     bool _somethingOpened = false;
@@ -45,7 +46,11 @@ public class InGameMenu : MonoBehaviour
     void onEsc(InputAction.CallbackContext ctx)
     {
         if (_somethingOpened) CloseAll();
-        else toggleWindow(_escMenu);
+        else
+        {
+            _loadMenu.UpdateButton();
+            toggleWindow(_escMenu);
+        }
     }
 
     //characteristics

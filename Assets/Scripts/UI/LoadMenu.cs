@@ -1,12 +1,13 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LoadMenu : MonoBehaviour
 {
     [SerializeField] GameObject _savePrefab;
     [SerializeField] Button _continueButton;
+    IEnumerable<Save> saves;
     private void Start()
     {
         UpdateButton();
@@ -24,11 +25,14 @@ public class LoadMenu : MonoBehaviour
     {
         foreach (Transform t in parent)
             Destroy(t.gameObject);
-        foreach (var save in SaveManager.GetSaves())
+        foreach (var save in saves)
             Instantiate(_savePrefab, parent).GetComponent<UISave>().Init(save);
     }
-    public void UpdateButton() =>
-        _continueButton.interactable = SaveManager.CheckSaves();
+    public void UpdateButton()
+    {
+        saves = SaveManager.GetSaves();
+        _continueButton.interactable = saves.Count() > 0;
+    }
     public void QuickSave() => SaveManager.Save(false);
     void quickLoad()
     {

@@ -5,10 +5,10 @@ using UnityEngine.Events;
 
 public class ExpCharacteristic
 {
-    [JsonIgnore] public Characteristic Characteristic;
+    [JsonIgnore] public Characteristic Characteristic { get; private set; }
     public string Name { get; private set; }
 
-    [JsonIgnore] public static UnityEvent<ExpCharacteristic, int, bool> OnGetExp = new();
+    public static UnityEvent<ExpCharacteristic, int, bool> OnGetExp = new();
     public int Experience { get; private set; }
     [JsonConstructor]
     public ExpCharacteristic(string Name, int Experience) { this.Name = Name; this.Experience = Experience; }
