@@ -22,4 +22,11 @@ public class PromptUI : MonoBehaviour
     {
         img.sprite = (isSelected) ? selectedImg : commonImg;
     }
+    public void Enabled(bool enabled)
+    {
+        Color color = enabled ? Color.white : Color.gray;
+        control.color = color;
+        prompt.color = color;
+        img.color = color;
+    }
 }

@@ -11,9 +11,9 @@ public class Collectable : Interactable
         isCollected = new(this, false, false);
         if (isCollected.Value) StartCoroutine(collect());
     }
-    public override void Interact()
+    public override void Interact(GameObject sender)
     {
-        GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>().UpdateCountBy(_item, _count);
+        sender.GetComponent<Inventory>().UpdateCountBy(_item, _count);
         StartCoroutine(collect());
     }
     IEnumerator collect()

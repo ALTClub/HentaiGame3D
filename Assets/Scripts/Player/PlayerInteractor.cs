@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Animations;
 using UnityEngine.Events;
 
 public class PlayerInteractor : MonoBehaviour
@@ -10,10 +8,12 @@ public class PlayerInteractor : MonoBehaviour
     private List<Interactable> interactables = new List<Interactable>();
     public static UnityEvent<List<Interactable>> OnInteractUpdate = new UnityEvent<List<Interactable>>();
     public static UnityEvent<int> OnSellectInteraction = new UnityEvent<int>();
+    public static string Player; //kostyl
 
     bool hidden = false;
     int currentInteract = 0;
 
+    private void Awake() => Player = ((object)gameObject).ToString();
     void Start()
     {
         InputManager.Input.Player.Interact.performed += ctx => interact();
@@ -62,7 +62,7 @@ public class PlayerInteractor : MonoBehaviour
     {
         if (interactables.Count > currentInteract && !hidden)
         {
-            interactables[currentInteract]?.Interact();
+            interactables[currentInteract]?.Interact(gameObject);
             if (!hidden)
                 OnInteractUpdate.Invoke(interactables);
         }

@@ -13,12 +13,11 @@ public class Door : Interactable
     private void Awake()
     {
         _isOpen = new(this, false, false);
-        _prompt = (_isOpen.Value) ? "Закрыть" : "Открыть";
         Quaternion targetRotation = Quaternion.Euler(0, 0, (_isOpen.Value) ? _openedAngle : _closedAngel);
         _door.transform.localRotation = targetRotation;
     }
 
-    public override void Interact()
+    public override void Interact(GameObject sender)
     {
         toggle();
     }
@@ -27,7 +26,6 @@ public class Door : Interactable
         if (rotator != null) StopCoroutine(rotator);
         rotator = StartCoroutine(toggleDoor());
         _isOpen.Value = !_isOpen.Value;
-        _prompt = (_isOpen.Value) ? "Закрыть" : "Открыть";
     }
 
     IEnumerator toggleDoor()
@@ -53,4 +51,6 @@ public class Door : Interactable
         Gizmos.color = Color.red;
         Gizmos.DrawRay(_door.transform.position, Quaternion.Euler(0, _closedAngel, 0) * startDirection);
     }
+
+    public override string GetPrompt { get { return _prompt[_isOpen.Value ? 1 : 0]; } }
 }

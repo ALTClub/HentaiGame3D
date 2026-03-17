@@ -29,7 +29,9 @@ public class InteractUI : MonoBehaviour
         {
             GameObject prompt = Instantiate(_promptPrefab, _promptsPoint);
             promptList.Add(prompt);
-            prompt.GetComponent<PromptUI>().SetText(interactable.GetPrompt);
+            PromptUI ui = prompt.GetComponent<PromptUI>();
+            ui.Enabled(interactable.IsAviable);
+            ui.SetText(interactable.GetPrompt);
         }
         selectInteraction(0);
     }

@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 public class ControllerNPC : Interactable
 {
-    public override void Interact()
+    public override void Interact(GameObject sender)
     {
         CustomEvent.Trigger(gameObject, "Interact");
         //DialogWindow.PlayDialog.Invoke(dialog);

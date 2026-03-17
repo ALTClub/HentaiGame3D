@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,7 +11,6 @@ public class PlayerMovement : MonoBehaviour
     CharacterController charController;
     Animator anim;
     float gravity = 6f, jumpElapsedTime = 0;
-    bool isJumping;
 
     void Start()
     {
@@ -42,16 +37,17 @@ public class PlayerMovement : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        if (anim.GetBool("IsSitting")) return;
         Vector3 direction = InputManager.Input.Player.Movement.ReadValue<Vector2>();
         direction = new Vector3(direction.x, 0, direction.y) * (Speed) * Time.fixedDeltaTime;
 
-        if (isJumping)
+        if (anim.GetBool("IsJumping"))
         {
             direction.y = Mathf.SmoothStep(JumpForce, JumpForce * 0.30f, jumpElapsedTime / JumpTime) * Time.fixedDeltaTime;
             jumpElapsedTime += Time.fixedDeltaTime;
             if (jumpElapsedTime >= JumpTime)
             {
-                isJumping = false;
+                anim.SetBool("IsJumping", false);
                 jumpElapsedTime = 0;
             }
         }
@@ -64,8 +60,8 @@ public class PlayerMovement : MonoBehaviour
         if (!ctx.canceled)
         {
             if (charController.isGrounded)
-                isJumping = true;
+                anim.SetBool("IsJumping", true);
         }
-        else if (isJumping) jumpElapsedTime = Mathf.Lerp(jumpElapsedTime, JumpTime, 0.25f);
+        else if (anim.GetBool("IsJumping")) jumpElapsedTime = Mathf.Lerp(jumpElapsedTime, JumpTime, 0.25f);
     }
 }
