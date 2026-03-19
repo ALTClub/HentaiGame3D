@@ -1,17 +1,21 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Sitting : MonoBehaviour
 {
     Animator anim;
+    NavMeshAgent agent;
     SaveData<bool> isSitting;
     void Start()
     {
         isSitting = new(this, false, false);
         TryGetComponent(out anim);
+        TryGetComponent(out agent);
         if (isSitting.Value)
         {
             anim?.SetBool("IsSitting", enabled);
+            if (agent) agent.enabled = false;
             if (gameObject.CompareTag("Player"))
                 InputManager.Input.Player.Movement.Disable();
         }
@@ -24,9 +28,11 @@ public class Sitting : MonoBehaviour
     }
     IEnumerator sit(float speed, Transform place, bool enabled)
     {
+        Debug.Log($"sit {gameObject.ToString()}");
         anim.SetBool("IsSitting", enabled);
         if (enabled)
         {
+            if (agent) agent.enabled = false;
             if (gameObject.CompareTag("Player"))
                 InputManager.Input.Player.Movement.Disable();
         }
@@ -46,6 +52,7 @@ public class Sitting : MonoBehaviour
 
         if (!enabled)
         {
+            if (agent) agent.enabled = true;
             if (gameObject.CompareTag("Player"))
                 InputManager.Input.Player.Movement.Enable();
         }
