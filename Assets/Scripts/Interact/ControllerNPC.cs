@@ -9,6 +9,7 @@ public class ControllerNPC : Interactable
     NavMeshAgent agent;
     private void Start()
     {
+        return;
         agent = GetComponent<NavMeshAgent>();
         StartCoroutine(Interact(target));
     }

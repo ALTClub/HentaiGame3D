@@ -1,4 +1,4 @@
-using Cinemachine;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ public class DialogWindow : MonoBehaviour
 {
     [SerializeField] GameObject _window;
     [SerializeField] TMP_Text _name, _text;
-    [SerializeField] CinemachineFreeLook _cam;
+    [SerializeField] Unity.Cinemachine.CinemachineFreeLook _cam;
 
     [Header("Задержки")]
     [SerializeField][Range(0, 0.5f)] float _charDelay = 0.05f;

@@ -10,7 +10,7 @@ public class Door : Interactable
     [SerializeField] GameObject _door;
     public bool IsPlayerCollision = false;
     Coroutine rotator;
-    private void Awake()
+    protected void Awake()
     {
         _isOpen = new(this, false, false);
         Quaternion targetRotation = Quaternion.Euler(0, 0, (_isOpen.Value) ? _openedAngle : _closedAngel);

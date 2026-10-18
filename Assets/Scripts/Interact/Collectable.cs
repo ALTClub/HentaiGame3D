@@ -6,7 +6,7 @@ public class Collectable : Interactable
     [SerializeField] Item _item;
     [SerializeField] int _count = 1;
     SaveData<bool> isCollected;
-    private void Awake()
+    protected void Awake()
     {
         isCollected = new(this, false, false);
         if (isCollected.Value) StartCoroutine(collect());

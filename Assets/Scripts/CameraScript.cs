@@ -1,9 +1,9 @@
-using Cinemachine;
+
 using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
-    [SerializeField] CinemachineFreeLook _cinemachine;
+    [SerializeField] Unity.Cinemachine.CinemachineFreeLook _cinemachine;
     Camera cam;
     void Start()
     {
